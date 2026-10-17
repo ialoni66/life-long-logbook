@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { defaultSettings, Settings } from "./settings";
 import { Data, Entry } from "./types";
 
 const KEY = "logbook.data.v2";
@@ -37,4 +38,18 @@ export async function load(): Promise<Data> {
 
 export async function save(data: Data) {
   await AsyncStorage.setItem(KEY, JSON.stringify(data));
+}
+
+const SETTINGS_KEY = "logbook.settings.v1";
+
+export async function loadSettings(): Promise<Settings> {
+  try {
+    const raw = await AsyncStorage.getItem(SETTINGS_KEY);
+    if (raw) return { ...defaultSettings(), ...JSON.parse(raw) };
+  } catch {}
+  return defaultSettings();
+}
+
+export async function saveSettings(s: Settings) {
+  await AsyncStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
 }

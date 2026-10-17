@@ -7,11 +7,14 @@ import { StatusBar } from "expo-status-bar";
 import { CalendarScreen } from "./src/CalendarScreen";
 import { LogScreen } from "./src/LogScreen";
 import { SearchScreen } from "./src/SearchScreen";
-import { load, save } from "./src/storage";
+import { SettingsScreen } from "./src/SettingsScreen";
+import { defaultSettings, Settings, SettingsProvider } from "./src/settings";
+import { load, loadSettings, save, saveSettings } from "./src/storage";
 import { styles } from "./src/styles";
 import { Data, Entry, uid } from "./src/types";
 
-type Tab = "log" | "search" | "calendar";
+// "settings" is reached from the gear on the Search page and has no tab of its own.
+type Tab = "log" | "search" | "calendar" | "settings";
 const TABS: { key: Tab; label: string }[] = [
   { key: "log", label: "+ Log" },
   { key: "search", label: "Search" },
@@ -39,9 +42,12 @@ export default function App() {
   const latest = useRef(data);
   const update = (d: Data) => { latest.current = d; setData(d); save(d); };
 
+  const [settings, setSettings] = useState<Settings>(defaultSettings());
+  const changeSettings = (s: Settings) => { setSettings(s); saveSettings(s); };
+
   useEffect(() => {
-    load().then((d) => {
-      latest.current = d; setData(d); setReady(true);
+    Promise.all([load(), loadSettings()]).then(([d, s]) => {
+      latest.current = d; setData(d); setSettings(s); setReady(true);
     });
   }, []);
 
@@ -61,6 +67,7 @@ export default function App() {
   if (!ready) return null;
 
   return (
+    <SettingsProvider value={settings}>
     <SafeAreaView style={styles.screen}>
       <StatusBar style="light" />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
@@ -74,7 +81,13 @@ export default function App() {
             />
           )}
           {tab === "search" && (
-            <SearchScreen data={data} onEdit={edit} onDelete={deleteEntry} onImport={update} />
+            <SearchScreen
+              data={data} onEdit={edit} onDelete={deleteEntry} onImport={update}
+              onOpenSettings={() => setTab("settings")}
+            />
+          )}
+          {tab === "settings" && (
+            <SettingsScreen settings={settings} onChange={changeSettings} onBack={() => setTab("search")} />
           )}
           {tab === "calendar" && <CalendarScreen data={data} onEdit={edit} onDelete={deleteEntry} />}
         </ScrollView>
@@ -85,10 +98,13 @@ export default function App() {
             key={t.key} style={styles.tab}
             onPress={() => { if (t.key !== "log") setEditing(null); setTab(t.key); }}
           >
-            <Text style={[styles.tabText, tab === t.key && styles.tabOn]}>{t.label}</Text>
+            <Text style={[styles.tabText, (tab === t.key || (tab === "settings" && t.key === "search")) && styles.tabOn]}>
+              {t.label}
+            </Text>
           </Pressable>
         ))}
       </View>
     </SafeAreaView>
+    </SettingsProvider>
   );
 }

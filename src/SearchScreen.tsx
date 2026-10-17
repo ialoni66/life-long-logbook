@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Platform, Pressable, Share, Text, TextInput } from "react-native";
+import { Platform, Pressable, Share, Text, TextInput, View } from "react-native";
 import { EntryCard } from "./EntryCard";
+import { DateFormat, formatDate, useSettings } from "./settings";
 import { parseBackup } from "./storage";
 import { colors, styles } from "./styles";
 import { Data, Entry, today } from "./types";
@@ -10,22 +11,25 @@ type Props = {
   onEdit: (e: Entry) => void;
   onDelete: (id: string) => void;
   onImport: (d: Data) => void;
+  onOpenSettings: () => void;
 };
 
 // Every word typed must match somewhere in who / where / when / notes.
-export function search(entries: Entry[], q: string) {
+export function search(entries: Entry[], q: string, fmt: DateFormat) {
   const words = q.toLowerCase().split(/\s+/).filter(Boolean);
   return entries
     .filter((e) => {
-      const hay = `${e.name} ${e.location} ${e.date} ${e.notes}`.toLowerCase();
+      // Dates match both as stored (2026-10-17) and as displayed (17/10/2026).
+      const hay = `${e.name} ${e.location} ${e.date} ${formatDate(e.date, fmt)} ${e.notes}`.toLowerCase();
       return words.every((w) => hay.includes(w));
     })
     .sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export function SearchScreen({ data, onEdit, onDelete, onImport }: Props) {
+export function SearchScreen({ data, onEdit, onDelete, onImport, onOpenSettings }: Props) {
+  const { dateFormat } = useSettings();
   const [q, setQ] = useState("");
-  const results = search(data.entries, q);
+  const results = search(data.entries, q, dateFormat);
 
   const exportData = async () => {
     const json = JSON.stringify(data, null, 2);
@@ -51,7 +55,12 @@ export function SearchScreen({ data, onEdit, onDelete, onImport }: Props) {
 
   return (
     <>
-      <Text style={styles.title}>Search</Text>
+      <View style={styles.headerRow}>
+        <Text style={[styles.title, { marginBottom: 0 }]}>Search</Text>
+        <Pressable onPress={onOpenSettings} hitSlop={10} accessibilityLabel="Settings">
+          <Text style={styles.gear}>⚙</Text>
+        </Pressable>
+      </View>
       <TextInput
         style={styles.input} value={q} onChangeText={setQ}
         placeholder="Search by location, name, date or notes"

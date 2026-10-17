@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { EntryCard } from "./EntryCard";
+import { formatDate, useSettings } from "./settings";
 import { colors, styles } from "./styles";
 import { Data, Entry, today, ymd } from "./types";
 
@@ -9,6 +10,7 @@ type Props = { data: Data; onEdit: (e: Entry) => void; onDelete: (id: string) =>
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function CalendarScreen({ data, onEdit, onDelete }: Props) {
+  const { dateFormat } = useSettings();
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
@@ -56,7 +58,7 @@ export function CalendarScreen({ data, onEdit, onDelete }: Props) {
           </Pressable>
         ))}
       </View>
-      <Text style={[styles.label, { marginTop: 14 }]}>{selected}</Text>
+      <Text style={[styles.label, { marginTop: 14 }]}>{formatDate(selected, dateFormat)}</Text>
       {dayEntries.length === 0 && <Text style={styles.empty}>Nothing logged this day.</Text>}
       {dayEntries.map((e) => <EntryCard key={e.id} entry={e} onEdit={onEdit} onDelete={onDelete} />)}
     </>
