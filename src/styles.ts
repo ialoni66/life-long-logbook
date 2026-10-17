@@ -1,13 +1,16 @@
 import { StyleSheet } from "react-native";
 
-export const colors = { bg: "#f4f6fb", card: "#fff", fg: "#1b1f2a", mut: "#6b7385", acc: "#2f6fed", line: "#cfd5e3" };
+export const colors = { bg: "#f4f6fb", card: "#fff", fg: "#1b1f2a", mut: "#6b7385", acc: "#2f6fed", line: "#cfd5e3", inputBg: "#2b3245", inputFg: "#f4f6fb", inputLine: "#3f4860", placeholder: "#fff3a8" };
 
 export const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   body: { padding: 16, paddingBottom: 40, maxWidth: 640, width: "100%", alignSelf: "center" },
   title: { fontSize: 24, fontWeight: "700", color: colors.fg, marginBottom: 12 },
   label: { color: colors.mut, fontSize: 13, marginBottom: 4 },
-  input: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 10, padding: 10, fontSize: 16, marginBottom: 10 },
+  input: { backgroundColor: colors.inputBg, color: colors.inputFg, borderWidth: 1, borderColor: colors.inputLine, borderRadius: 10, padding: 10, fontSize: 16, marginBottom: 10 },
+  inputOff: { opacity: 0.45 },
+  labelRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 4 },
+  skip: { color: colors.acc, fontSize: 13, fontWeight: "600" },
   multi: { minHeight: 80, textAlignVertical: "top" },
   btn: { backgroundColor: colors.acc, borderRadius: 10, padding: 12, alignItems: "center", marginBottom: 10 },
   btnText: { color: "#fff", fontWeight: "600", fontSize: 16 },

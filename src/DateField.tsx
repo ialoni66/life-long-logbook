@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Platform, Pressable, Text } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { styles } from "./styles";
+import { colors, styles } from "./styles";
 
 type Props = { value: string; onChange: (v: string) => void };
 
@@ -23,7 +23,10 @@ export function DateField({ value, onChange }: Props) {
         padding: 10,
         fontSize: 16,
         borderRadius: 10,
-        border: "1px solid #cfd5e3",
+        border: "1px solid #3f4860",
+        background: "#2b3245",
+        color: "#f4f6fb",
+        colorScheme: "dark",
         marginBottom: 10,
       },
     });
@@ -33,7 +36,7 @@ export function DateField({ value, onChange }: Props) {
   return (
     <>
       <Pressable style={styles.input} onPress={() => setOpen(true)}>
-        <Text>{value}</Text>
+        <Text style={{ color: colors.inputFg }}>{value}</Text>
       </Pressable>
       {open && (
         <DateTimePicker

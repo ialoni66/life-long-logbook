@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Platform, Pressable, Share, Text, TextInput } from "react-native";
 import { EntryCard } from "./EntryCard";
 import { parseBackup } from "./storage";
-import { styles } from "./styles";
+import { colors, styles } from "./styles";
 import { Data, Entry, today } from "./types";
 
 type Props = {
@@ -55,6 +55,7 @@ export function SearchScreen({ data, onEdit, onDelete, onImport }: Props) {
       <TextInput
         style={styles.input} value={q} onChangeText={setQ}
         placeholder="Search by location, name, date or notes"
+        placeholderTextColor={colors.placeholder}
       />
       <Text style={styles.label}>{results.length} {results.length === 1 ? "entry" : "entries"}</Text>
       {results.length === 0 && <Text style={styles.empty}>{data.entries.length ? "No matches." : 'Nothing logged yet. Tap "+ Log".'}</Text>}
