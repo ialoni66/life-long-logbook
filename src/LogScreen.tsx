@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Alert, Platform, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Platform, Pressable, useWindowDimensions, View } from "react-native";
+import { FONTS } from "./fonts";
+import { Text, TextInput } from "./ui";
 import { DateField } from "./DateField";
 import { colors, styles } from "./styles";
 import { Entry, today } from "./types";
@@ -17,7 +19,16 @@ const PLACEHOLDERS: Record<Field, string> = {
 const notify = (msg: string) =>
   Platform.OS === "web" ? window.alert(msg) : Alert.alert("Missing info", msg);
 
+const DATE_CHIP_WIDTH = 104; // date chip plus the gap beside the title
+const MAX_TITLE_SIZE = 26;
+
 export function LogScreen({ editing, onSave, onCancel }: Props) {
+  // Size the title so it always fits on one line next to the date chip.
+  const { width } = useWindowDimensions();
+  const title = editing ? "Edit entry" : "New Character Entry";
+  const room = Math.min(width, 640) - 40 - DATE_CHIP_WIDTH;
+  const titleSize = Math.max(16, Math.min(MAX_TITLE_SIZE, room / (title.length * FONTS.lora.charWidth)));
+
   const [date, setDate] = useState(editing?.date ?? today());
   const [values, setValues] = useState<Record<Field, string>>({
     name: editing?.name ?? "",
@@ -88,7 +99,9 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
   return (
     <>
       <View style={styles.headerRow}>
-        <Text style={[styles.title, { marginBottom: 0, flexShrink: 1, marginRight: 8 }]}>{editing ? "Edit entry" : "New Character Entry"}</Text>
+        <Text noScale numberOfLines={1} style={[styles.title, { marginBottom: 0, fontSize: titleSize, flexShrink: 1, marginRight: 8 }]}>
+          {title}
+        </Text>
         <DateField value={date} onChange={setDate} />
       </View>
       {saved && <Text style={[styles.link, { fontWeight: "600" }]}>Saved ✓</Text>}

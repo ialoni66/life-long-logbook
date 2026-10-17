@@ -1,5 +1,6 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { Text } from "./ui";
 import { highlight, Query } from "./searchEngine";
 import { formatDate, useSettings } from "./settings";
 import { colors, styles } from "./styles";
@@ -28,19 +29,19 @@ export function EntryCard({ entry, query, onEdit, onDelete }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.cardTop}>
-        <Text style={styles.cardName}>
+        <Text kind="entry" style={styles.cardName}>
           {entry.name ? <Marked text={entry.name} query={query} /> : "(no name)"}
         </Text>
         <Text style={styles.cardDate}>{formatDate(entry.date, dateFormat)}</Text>
       </View>
       {!!entry.location && (
-        <Text style={styles.cardSub}>📍 <Marked text={entry.location} query={query} /></Text>
+        <Text kind="entry" style={styles.cardSub}>📍 <Marked text={entry.location} query={query} /></Text>
       )}
       {!!entry.contact && (
-        <Text style={styles.cardSub}>📞 <Marked text={entry.contact} query={query} /></Text>
+        <Text kind="entry" style={styles.cardSub}>📞 <Marked text={entry.contact} query={query} /></Text>
       )}
       {!!entry.notes && (
-        <Text style={styles.cardText}><Marked text={entry.notes} query={query} /></Text>
+        <Text kind="entry" style={styles.cardText}><Marked text={entry.notes} query={query} /></Text>
       )}
       <View style={[styles.cardTop, { marginTop: 8 }]}>
         <Pressable onPress={() => onEdit(entry)}><Text style={styles.link}>Edit</Text></Pressable>

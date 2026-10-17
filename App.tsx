@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Alert, KeyboardAvoidingView, Platform, Pressable, SafeAreaView,
-  ScrollView, Text, View,
+  ScrollView, View,
 } from "react-native";
+import { Text } from "./src/ui";
+import { DEFAULT_FONT, FONT_KEYS, FONTS, loadFont, UI_FONT } from "./src/fonts";
 import { StatusBar } from "expo-status-bar";
 import { CalendarScreen } from "./src/CalendarScreen";
 import { LogScreen } from "./src/LogScreen";
@@ -43,11 +45,19 @@ export default function App() {
   const update = (d: Data) => { latest.current = d; setData(d); save(d); };
 
   const [settings, setSettings] = useState<Settings>(defaultSettings());
-  const changeSettings = (s: Settings) => { setSettings(s); saveSettings(s); };
+  // Make sure a font is loaded before it is used, so text never flashes in a fallback face.
+  const changeSettings = async (s: Settings) => {
+    await loadFont(s.font);
+    setSettings(s);
+    saveSettings(s);
+  };
 
   useEffect(() => {
-    Promise.all([load(), loadSettings()]).then(([d, s]) => {
+    Promise.all([load(), loadSettings()]).then(async ([d, loaded]) => {
+      const s = FONTS[loaded.font] ? loaded : { ...loaded, font: DEFAULT_FONT };
+      await Promise.all([loadFont(UI_FONT), loadFont(s.font)]);
       latest.current = d; setData(d); setSettings(s); setReady(true);
+      FONT_KEYS.forEach((k) => loadFont(k)); // the rest load quietly for the Settings previews
     });
   }, []);
 

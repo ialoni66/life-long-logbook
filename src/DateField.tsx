@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Modal, Platform, Pressable, Text, View } from "react-native";
+import { Modal, Platform, Pressable, View } from "react-native";
+import { FONTS } from "./fonts";
+import { Text } from "./ui";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { formatDate, useSettings } from "./settings";
 import { colors, styles } from "./styles";
@@ -28,6 +30,7 @@ export function DateField({ value, onChange }: Props) {
           borderRadius: 10,
           padding: "6px 10px",
           fontSize: 14,
+          fontFamily: FONTS.lora.regular,
           cursor: "pointer",
         },
       },
