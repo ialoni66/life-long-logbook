@@ -1,9 +1,9 @@
 import { StyleSheet } from "react-native";
 
 export const colors = {
-  bg: "#1b2130", card: "#283046", fg: "#f4f6fb", mut: "#b4bdd0", acc: "#6ea6ff", line: "#44506b",
+  bg: "#1b2130", card: "#323c56", fg: "#f4f6fb", mut: "#c6cee0", acc: "#6ea6ff", line: "#4d5a78",
   onAcc: "#0e1420", // text on top of the accent color
-  inputBg: "#fff3a8", inputFg: "#1b1f2a", inputLine: "#e0cf6a", placeholder: "#8c8c8c",
+  inputBg: "#f4ecc2", inputFg: "#1b1f2a", inputLine: "#d8cd96", placeholder: "#858585",
 };
 
 export const styles = StyleSheet.create({

@@ -24,9 +24,9 @@ export function DateField({ value, onChange }: Props) {
       {
         style: {
           position: "relative",
-          background: "#fff3a8",
-          color: "#1b1f2a",
-          border: "1px solid #e0cf6a",
+          background: colors.inputBg,
+          color: colors.inputFg,
+          border: `1px solid ${colors.inputLine}`,
           borderRadius: 10,
           padding: "6px 10px",
           fontSize: 14,
