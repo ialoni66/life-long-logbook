@@ -94,6 +94,7 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
       {saved && <Text style={[styles.link, { fontWeight: "600" }]}>Saved ✓</Text>}
       {field("name")}
       {field("location")}
+      {field("notes")}
       <View style={styles.labelRow}>
         <Text style={styles.label}>Contact</Text>
       </View>
@@ -106,7 +107,6 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
         autoCapitalize="none"
         autoCorrect={false}
       />
-      {field("notes")}
       <Pressable style={styles.btn} onPress={submit}>
         <Text style={styles.btnText}>{editing ? "Save changes" : "Save"}</Text>
       </Pressable>
