@@ -51,7 +51,7 @@ export function SearchScreen({ data, onEdit, onDelete, onImport, onOpenSettings 
         </Pressable>
       </View>
       <TextInput
-        style={styles.input} value={q} onChangeText={setQ}
+        style={[styles.input, styles.searchBox]} value={q} onChangeText={setQ}
         placeholder="Search nickname, place, date, contact or notes"
         placeholderTextColor={colors.placeholder}
       />

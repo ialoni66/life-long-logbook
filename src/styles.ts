@@ -21,8 +21,10 @@ export const styles = StyleSheet.create({
   gear: { fontSize: 26, color: colors.fg, paddingHorizontal: 6 },
   option: { backgroundColor: colors.card, borderRadius: 12, borderWidth: 1, borderColor: colors.line, padding: 18, marginBottom: 14, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   optionOn: { borderColor: colors.acc },
+  // The Search box keeps its original full-width size (the entry form's boxes are smaller and inset).
+  searchBox: { marginHorizontal: 0, paddingVertical: 14, paddingHorizontal: 14, fontSize: 16, borderRadius: 12, marginBottom: 22 },
   inputOff: { opacity: 0.45 },
-  labelRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 4, marginRight: INDENT },
+  labelRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 4, marginHorizontal: INDENT },
   skip: { color: colors.acc, fontSize: 14, fontWeight: "600" },
   multi: { minHeight: 96, textAlignVertical: "top" },
   btn: { backgroundColor: colors.acc, borderRadius: 12, padding: 16, alignItems: "center", marginTop: 6, marginBottom: 14 },
