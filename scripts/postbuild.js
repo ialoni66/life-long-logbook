@@ -34,7 +34,7 @@ const tags = `
 const file = path.join(dist, "index.html");
 let html = fs.readFileSync(file, "utf8");
 html = html.replace("</head>", `${tags}\n</head>`);
-html = html.replace(/<meta name="viewport"[^>]*>/, '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">');
+html = html.replace(/<meta name="viewport"[^>]*>/, '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">');
 fs.writeFileSync(file, html);
 
 fs.writeFileSync(path.join(dist, ".nojekyll"), "");

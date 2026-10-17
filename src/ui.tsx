@@ -46,5 +46,8 @@ export function Text({ style, kind = "ui", fontKey, noScale, ...rest }: TextProp
 
 export function TextInput({ style, fontKey, ...rest }: TextInputProps & Extra) {
   const { font } = useSettings();
-  return <RNTextInput {...rest} style={resolve(style, fontKey ?? font, false)} />;
+  const resolved: Record<string, any> = resolve(style, fontKey ?? font, false);
+  // iPhone Safari zooms the page when a box with text under 16px is tapped, so never go below 16.
+  resolved.fontSize = Math.max(resolved.fontSize ?? 16, 16);
+  return <RNTextInput {...rest} style={resolved} />;
 }

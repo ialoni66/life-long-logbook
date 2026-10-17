@@ -40,7 +40,8 @@ export function DateField({ value, onChange }: Props) {
         value,
         onChange: (e: any) => e.target.value && onChange(e.target.value),
         onClick: (e: any) => { try { e.target.showPicker(); } catch {} },
-        style: { position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer" },
+        // 16px keeps iPhone Safari from zooming in when this hidden input is tapped.
+        style: { position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0, cursor: "pointer", fontSize: 16 },
       })
     );
   }

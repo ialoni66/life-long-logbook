@@ -6,7 +6,7 @@ export const colors = {
   inputBg: "#f4ecc2", inputFg: "#1b1f2a", inputLine: "#d8cd96", placeholder: "#858585",
 };
 
-export const INDENT = 28; // how far boxes (and the Skip links above them) are inset from the title
+export const INDENT = 14; // how far boxes (and the Skip links above them) are inset from the title
 
 export const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
