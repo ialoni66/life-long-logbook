@@ -20,14 +20,14 @@ const PLACEHOLDERS: Record<Field, string> = {
 const notify = (msg: string) =>
   Platform.OS === "web" ? window.alert(msg) : Alert.alert("Missing info", msg);
 
-const DATE_CHIP_WIDTH = 74; // date chip plus the gap beside the title
-const MAX_TITLE_SIZE = 25;
+const DATE_COLUMN_WIDTH = 112; // the date box beside "Where we met"
+const MAX_TITLE_SIZE = 26;
 
 export function LogScreen({ editing, onSave, onCancel }: Props) {
-  // Size the title so it always fits on one line next to the date chip.
+  // Size the title so it always fits on one line.
   const { width } = useWindowDimensions();
   const title = editing ? "Edit entry" : "New Character Entry";
-  const room = Math.min(width, 640) - 40 - DATE_CHIP_WIDTH;
+  const room = Math.min(width, 640) - 40;
   const titleSize = Math.max(16, Math.min(MAX_TITLE_SIZE, room / (title.length * FONTS.lora.charWidth)));
 
   const [date, setDate] = useState(editing?.date ?? today());
@@ -76,17 +76,23 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
     }
   };
 
-  // A labelled box with its Skip button.
-  const field = (f: Field) => (
+  // A labelled box with its Skip button. `inline` drops the side and bottom margins
+  // so the box can share a row with the date box.
+  const field = (f: Field, inline = false) => (
     <React.Fragment key={f}>
-      <View style={styles.labelRow}>
+      <View style={[styles.labelRow, inline && { marginHorizontal: 0 }]}>
         <Text style={styles.label}>{LABELS[f]}</Text>
         <Pressable onPress={() => toggleSkip(f)} hitSlop={10}>
           <Text style={styles.skip}>{skipped[f] ? "Undo skip" : "Skip"}</Text>
         </Pressable>
       </View>
       <TextInput
-        style={[styles.input, f === "notes" && styles.multi, skipped[f] && styles.inputOff]}
+        style={[
+          styles.input,
+          f === "notes" && styles.multi,
+          skipped[f] && styles.inputOff,
+          inline && { marginHorizontal: 0, marginBottom: 0 },
+        ]}
         value={values[f]}
         onChangeText={(v) => set(f, v)}
         placeholder={skipped[f] ? "Skipped" : PLACEHOLDERS[f]}
@@ -100,14 +106,21 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
   return (
     <>
       <View style={styles.headerRow}>
-        <Text noScale numberOfLines={1} style={[styles.title, { marginBottom: 0, fontSize: titleSize, flexShrink: 1, marginRight: 8 }]}>
+        <Text noScale numberOfLines={1} style={[styles.title, { marginBottom: 0, fontSize: titleSize, flexShrink: 1 }]}>
           {title}
         </Text>
-        <DateField value={date} onChange={setDate} />
       </View>
       {saved && <Text style={[styles.link, { fontWeight: "600" }]}>Saved ✓</Text>}
       {field("name")}
-      {field("location")}
+      <View style={styles.rowWithDate}>
+        <View style={{ flex: 1 }}>{field("location", true)}</View>
+        <View style={{ width: DATE_COLUMN_WIDTH }}>
+          <View style={[styles.labelRow, { marginHorizontal: 0 }]}>
+            <Text style={styles.label}>Date</Text>
+          </View>
+          <DateField value={date} onChange={setDate} />
+        </View>
+      </View>
       {field("notes")}
       <View style={styles.labelRow}>
         <Text style={styles.label}>Contact</Text>

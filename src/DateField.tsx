@@ -9,27 +9,32 @@ import { ymd } from "./types";
 
 type Props = { value: string; onChange: (v: string) => void };
 
-// Small date chip meant to sit in a screen header. It shows the date in the
-// user's chosen format; the value itself is always YYYY-MM-DD.
+// A date box that matches the text boxes. It fills the height of the column it sits
+// in, so it lines up with the box beside it. It shows the date in the user's chosen
+// format; the value itself is always YYYY-MM-DD.
 export function DateField({ value, onChange }: Props) {
   const { dateFormat } = useSettings();
   const [open, setOpen] = useState(false);
   const label = formatDate(value, dateFormat);
 
   if (Platform.OS === "web") {
-    // A transparent native date input sits on top of the chip, so a tap opens the
-    // browser's picker while the chip shows our own format.
+    // A transparent native date input sits on top of the box, so a tap opens the
+    // browser's picker while the box shows our own format.
     return React.createElement(
       "div",
       {
         style: {
           position: "relative",
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          boxSizing: "border-box",
           background: colors.inputBg,
           color: colors.inputFg,
           border: `1px solid ${colors.inputLine}`,
-          borderRadius: 6,
-          padding: "2px 6px",
-          fontSize: 11,
+          borderRadius: 10,
+          padding: "10px 12px",
+          fontSize: 15,
           fontFamily: FONTS.lora.regular,
           cursor: "pointer",
         },
@@ -50,10 +55,10 @@ export function DateField({ value, onChange }: Props) {
   const date = new Date(y, m - 1, d);
   const chip = (
     <Pressable
-      style={[styles.input, { marginBottom: 0, marginHorizontal: 0, paddingVertical: 2, paddingHorizontal: 6, borderRadius: 6 }]}
+      style={[styles.input, { marginBottom: 0, marginHorizontal: 0, flex: 1, justifyContent: "center" }]}
       onPress={() => setOpen(true)}
     >
-      <Text style={{ color: colors.inputFg, fontSize: 11 }}>{label}</Text>
+      <Text style={{ color: colors.inputFg, fontSize: 15 }}>{label}</Text>
     </Pressable>
   );
 
