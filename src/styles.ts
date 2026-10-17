@@ -1,0 +1,33 @@
+import { StyleSheet } from "react-native";
+
+export const colors = { bg: "#f4f6fb", card: "#fff", fg: "#1b1f2a", mut: "#6b7385", acc: "#2f6fed", line: "#cfd5e3" };
+
+export const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: colors.bg },
+  body: { padding: 16, paddingBottom: 40, maxWidth: 640, width: "100%", alignSelf: "center" },
+  title: { fontSize: 24, fontWeight: "700", color: colors.fg, marginBottom: 12 },
+  label: { color: colors.mut, fontSize: 13, marginBottom: 4 },
+  input: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 10, padding: 10, fontSize: 16, marginBottom: 10 },
+  multi: { minHeight: 80, textAlignVertical: "top" },
+  btn: { backgroundColor: colors.acc, borderRadius: 10, padding: 12, alignItems: "center", marginBottom: 10 },
+  btnText: { color: "#fff", fontWeight: "600", fontSize: 16 },
+  btn2: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 10, padding: 12, alignItems: "center", marginBottom: 10 },
+  btn2Text: { color: colors.fg, fontSize: 16 },
+  card: { backgroundColor: colors.card, borderRadius: 12, padding: 12, marginBottom: 10 },
+  cardTop: { flexDirection: "row", justifyContent: "space-between" },
+  cardName: { fontWeight: "600", fontSize: 16, color: colors.fg },
+  cardDate: { color: colors.mut, fontSize: 13 },
+  cardText: { color: colors.fg, marginTop: 4 },
+  cardSub: { color: colors.mut, marginTop: 4 },
+  tabs: { flexDirection: "row", backgroundColor: colors.card, borderTopWidth: 1, borderColor: colors.line },
+  tab: { flex: 1, padding: 14, alignItems: "center" },
+  tabText: { color: colors.mut, fontWeight: "600" },
+  tabOn: { color: colors.acc },
+  chips: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 10 },
+  chip: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 16, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card },
+  chipOn: { backgroundColor: colors.acc, borderColor: colors.acc },
+  chipText: { color: colors.fg },
+  chipTextOn: { color: "#fff" },
+  link: { color: colors.acc, marginBottom: 12 },
+  empty: { color: colors.mut, textAlign: "center", marginTop: 30 },
+});

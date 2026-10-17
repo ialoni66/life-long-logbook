@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Life-long Logbook",
+    "slug": "life-long-logbook",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.ilai.lifelonglogbook"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/favicon.png",
+      "name": "Life-long Logbook",
+      "shortName": "Logbook",
+      "display": "standalone",
+      "backgroundColor": "#ffffff",
+      "themeColor": "#2f6fed"
+    },
+    "experiments": {
+      "baseUrl": "/life-long-logbook"
+    },
+    "plugins": [
+      "@react-native-community/datetimepicker"
+    ]
+  }
+}
