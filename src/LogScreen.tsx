@@ -20,7 +20,7 @@ const PLACEHOLDERS: Record<Field, string> = {
 const notify = (msg: string) =>
   Platform.OS === "web" ? window.alert(msg) : Alert.alert("Missing info", msg);
 
-const DATE_CHIP_WIDTH = 86; // date chip plus the gap beside the title
+const DATE_CHIP_WIDTH = 74; // date chip plus the gap beside the title
 const MAX_TITLE_SIZE = 25;
 
 export function LogScreen({ editing, onSave, onCancel }: Props) {

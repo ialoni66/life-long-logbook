@@ -27,9 +27,9 @@ export function DateField({ value, onChange }: Props) {
           background: colors.inputBg,
           color: colors.inputFg,
           border: `1px solid ${colors.inputLine}`,
-          borderRadius: 8,
-          padding: "4px 8px",
-          fontSize: 12,
+          borderRadius: 6,
+          padding: "2px 6px",
+          fontSize: 11,
           fontFamily: FONTS.lora.regular,
           cursor: "pointer",
         },
@@ -50,10 +50,10 @@ export function DateField({ value, onChange }: Props) {
   const date = new Date(y, m - 1, d);
   const chip = (
     <Pressable
-      style={[styles.input, { marginBottom: 0, marginHorizontal: 0, paddingVertical: 4, paddingHorizontal: 8, borderRadius: 8 }]}
+      style={[styles.input, { marginBottom: 0, marginHorizontal: 0, paddingVertical: 2, paddingHorizontal: 6, borderRadius: 6 }]}
       onPress={() => setOpen(true)}
     >
-      <Text style={{ color: colors.inputFg, fontSize: 12 }}>{label}</Text>
+      <Text style={{ color: colors.inputFg, fontSize: 11 }}>{label}</Text>
     </Pressable>
   );
 
