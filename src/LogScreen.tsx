@@ -30,6 +30,8 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
     location: !!editing && !editing.location,
     notes: !!editing && !editing.notes,
   });
+  // Contact is always optional: it has no Skip button and never triggers the empty-field alert.
+  const [contact, setContact] = useState(editing?.contact ?? "");
   const [saved, setSaved] = useState(false);
 
   const set = (f: Field, v: string) => setValues((p) => ({ ...p, [f]: v }));
@@ -45,18 +47,43 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
       );
     }
     const out = (f: Field) => (skipped[f] ? "" : values[f].trim());
-    if (!out("name") && !out("location") && !out("notes")) {
-      return notify("Add at least one of Who, Where or Notes.");
+    if (!out("name") && !out("location") && !out("notes") && !contact.trim()) {
+      return notify("Add at least one of Nickname, Where we met, Contact or Notes.");
     }
-    onSave({ date, name: out("name"), location: out("location"), notes: out("notes") }, editing?.id);
+    onSave(
+      { date, name: out("name"), location: out("location"), contact: contact.trim(), notes: out("notes") },
+      editing?.id
+    );
     if (!editing) {
       setDate(today());
+      setContact("");
       setValues({ name: "", location: "", notes: "" });
       setSkipped({ name: false, location: false, notes: false });
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     }
   };
+
+  // A labelled box with its Skip button.
+  const field = (f: Field) => (
+    <React.Fragment key={f}>
+      <View style={styles.labelRow}>
+        <Text style={styles.label}>{LABELS[f]}</Text>
+        <Pressable onPress={() => toggleSkip(f)} hitSlop={10}>
+          <Text style={styles.skip}>{skipped[f] ? "Undo skip" : "Skip"}</Text>
+        </Pressable>
+      </View>
+      <TextInput
+        style={[styles.input, f === "notes" && styles.multi, skipped[f] && styles.inputOff]}
+        value={values[f]}
+        onChangeText={(v) => set(f, v)}
+        placeholder={skipped[f] ? "Skipped" : PLACEHOLDERS[f]}
+        placeholderTextColor={colors.placeholder}
+        multiline={f === "notes"}
+        editable={!skipped[f]}
+      />
+    </React.Fragment>
+  );
 
   return (
     <>
@@ -65,25 +92,21 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
         <DateField value={date} onChange={setDate} />
       </View>
       {saved && <Text style={[styles.link, { fontWeight: "600" }]}>Saved ✓</Text>}
-      {(Object.keys(LABELS) as Field[]).map((f) => (
-        <React.Fragment key={f}>
-          <View style={styles.labelRow}>
-            <Text style={styles.label}>{LABELS[f]}</Text>
-            <Pressable onPress={() => toggleSkip(f)} hitSlop={10}>
-              <Text style={styles.skip}>{skipped[f] ? "Undo skip" : "Skip"}</Text>
-            </Pressable>
-          </View>
-          <TextInput
-            style={[styles.input, f === "notes" && styles.multi, skipped[f] && styles.inputOff]}
-            value={values[f]}
-            onChangeText={(v) => set(f, v)}
-            placeholder={skipped[f] ? "Skipped" : PLACEHOLDERS[f]}
-            placeholderTextColor={colors.placeholder}
-            multiline={f === "notes"}
-            editable={!skipped[f]}
-          />
-        </React.Fragment>
-      ))}
+      {field("name")}
+      {field("location")}
+      <View style={styles.labelRow}>
+        <Text style={styles.label}>Contact</Text>
+      </View>
+      <TextInput
+        style={styles.input}
+        value={contact}
+        onChangeText={setContact}
+        placeholder="Phone, email, social handle..."
+        placeholderTextColor={colors.placeholder}
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      {field("notes")}
       <Pressable style={styles.btn} onPress={submit}>
         <Text style={styles.btnText}>{editing ? "Save changes" : "Save"}</Text>
       </Pressable>

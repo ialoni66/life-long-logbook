@@ -188,7 +188,7 @@ export function strength(q: QueryWord, docStem: string): number {
 
 // ---------- searching ----------
 
-const WEIGHTS = { name: 3, location: 2, date: 1.5, notes: 1.2 };
+const WEIGHTS = { name: 3, location: 2, contact: 2, date: 1.5, notes: 1.2 };
 
 export function searchEntries(entries: Entry[], text: string): { results: Entry[]; query: Query | null } {
   const query = compileQuery(text);
@@ -200,6 +200,7 @@ export function searchEntries(entries: Entry[], text: string): { results: Entry[
     const fields: [number, string[]][] = [
       [WEIGHTS.name, pieces(entry.name).map((p) => p.stem)],
       [WEIGHTS.location, pieces(entry.location).map((p) => p.stem)],
+      [WEIGHTS.contact, pieces(entry.contact ?? "").map((p) => p.stem)],
       [WEIGHTS.date, pieces(entry.date).map((p) => p.stem)],
       [WEIGHTS.notes, pieces(entry.notes).map((p) => p.stem)],
     ];

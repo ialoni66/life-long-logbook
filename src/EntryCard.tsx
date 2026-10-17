@@ -36,6 +36,9 @@ export function EntryCard({ entry, query, onEdit, onDelete }: Props) {
       {!!entry.location && (
         <Text style={styles.cardSub}>📍 <Marked text={entry.location} query={query} /></Text>
       )}
+      {!!entry.contact && (
+        <Text style={styles.cardSub}>📞 <Marked text={entry.contact} query={query} /></Text>
+      )}
       {!!entry.notes && (
         <Text style={styles.cardText}><Marked text={entry.notes} query={query} /></Text>
       )}

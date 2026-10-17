@@ -5,6 +5,7 @@ export type Entry = {
   date: string; // YYYY-MM-DD (When)
   name: string; // Who
   location: string; // Where
+  contact?: string; // how to reach them (phone, email, handle...); optional, absent on older entries
   notes: string;
 };
 
