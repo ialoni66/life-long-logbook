@@ -7,7 +7,7 @@ import { Entry, today } from "./types";
 type Props = { editing: Entry | null; onSave: (e: Omit<Entry, "id">, id?: string) => void; onCancel: () => void };
 type Field = "name" | "location" | "notes";
 
-const LABELS: Record<Field, string> = { name: "Who", location: "Where", notes: "Notes" };
+const LABELS: Record<Field, string> = { name: "Nickname", location: "Where", notes: "Notes" };
 const PLACEHOLDERS: Record<Field, string> = {
   name: "Name (if you remember it)",
   location: "Location",
