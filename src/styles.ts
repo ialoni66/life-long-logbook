@@ -1,6 +1,9 @@
 import { StyleSheet } from "react-native";
 
-export const colors = { bg: "#f4f6fb", card: "#fff", fg: "#1b1f2a", mut: "#6b7385", acc: "#2f6fed", line: "#cfd5e3", inputBg: "#2b3245", inputFg: "#f4f6fb", inputLine: "#3f4860", placeholder: "#fff3a8" };
+export const colors = {
+  bg: "#12151c", card: "#1e2330", fg: "#e8eaf0", mut: "#9aa3b5", acc: "#4a8af4", line: "#323a4e",
+  inputBg: "#fff3a8", inputFg: "#1b1f2a", inputLine: "#e0cf6a", placeholder: "#8c8c8c",
+};
 
 export const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },

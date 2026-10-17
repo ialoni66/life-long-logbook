@@ -15,8 +15,8 @@ fs.writeFileSync(
     start_url: `${BASE}/`,
     scope: `${BASE}/`,
     display: "standalone",
-    background_color: "#f4f6fb",
-    theme_color: "#2f6fed",
+    background_color: "#12151c",
+    theme_color: "#12151c",
     icons: [{ src: `${BASE}/apple-touch-icon.png`, sizes: "1024x1024", type: "image/png" }],
   })
 );
@@ -27,8 +27,9 @@ const tags = `
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Logbook">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#2f6fed">`;
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="color-scheme" content="dark">
+<style>html,body{background:#12151c}</style>`;
 
 const file = path.join(dist, "index.html");
 let html = fs.readFileSync(file, "utf8");

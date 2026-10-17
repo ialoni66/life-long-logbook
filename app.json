@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.ilai.lifelonglogbook"
@@ -26,8 +26,8 @@
       "name": "Life-long Logbook",
       "shortName": "Logbook",
       "display": "standalone",
-      "backgroundColor": "#ffffff",
-      "themeColor": "#2f6fed"
+      "backgroundColor": "#12151c",
+      "themeColor": "#12151c"
     },
     "experiments": {
       "baseUrl": "/life-long-logbook"
