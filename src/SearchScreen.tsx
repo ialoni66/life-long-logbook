@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Platform, Pressable, Share, Text, TextInput, View } from "react-native";
 import { EntryCard } from "./EntryCard";
-import { DateFormat, formatDate, useSettings } from "./settings";
+import { searchEntries } from "./searchEngine";
 import { parseBackup } from "./storage";
 import { colors, styles } from "./styles";
 import { Data, Entry, today } from "./types";
@@ -14,22 +14,10 @@ type Props = {
   onOpenSettings: () => void;
 };
 
-// Every word typed must match somewhere in who / where / when / notes.
-export function search(entries: Entry[], q: string, fmt: DateFormat) {
-  const words = q.toLowerCase().split(/\s+/).filter(Boolean);
-  return entries
-    .filter((e) => {
-      // Dates match both as stored (2026-10-17) and as displayed (17/10/2026).
-      const hay = `${e.name} ${e.location} ${e.date} ${formatDate(e.date, fmt)} ${e.notes}`.toLowerCase();
-      return words.every((w) => hay.includes(w));
-    })
-    .sort((a, b) => b.date.localeCompare(a.date));
-}
-
 export function SearchScreen({ data, onEdit, onDelete, onImport, onOpenSettings }: Props) {
-  const { dateFormat } = useSettings();
   const [q, setQ] = useState("");
-  const results = search(data.entries, q, dateFormat);
+  // Matching, ranking and typo/synonym handling live in searchEngine.ts.
+  const { results, query } = searchEntries(data.entries, q);
 
   const exportData = async () => {
     const json = JSON.stringify(data, null, 2);
@@ -63,12 +51,12 @@ export function SearchScreen({ data, onEdit, onDelete, onImport, onOpenSettings 
       </View>
       <TextInput
         style={styles.input} value={q} onChangeText={setQ}
-        placeholder="Search by location, name, date or notes"
+        placeholder="Search nickname, where we met, date or notes"
         placeholderTextColor={colors.placeholder}
       />
       <Text style={styles.label}>{results.length} {results.length === 1 ? "entry" : "entries"}</Text>
       {results.length === 0 && <Text style={styles.empty}>{data.entries.length ? "No matches." : 'Nothing logged yet. Tap "+ Log".'}</Text>}
-      {results.map((e) => <EntryCard key={e.id} entry={e} onEdit={onEdit} onDelete={onDelete} />)}
+      {results.map((e) => <EntryCard key={e.id} entry={e} query={query} onEdit={onEdit} onDelete={onDelete} />)}
       <Text style={[styles.label, { marginTop: 16 }]}>Backup (data stays on this device)</Text>
       <Pressable style={styles.btn2} onPress={exportData}><Text style={styles.btn2Text}>Export backup</Text></Pressable>
       {Platform.OS === "web" && (
