@@ -61,7 +61,7 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
   return (
     <>
       <View style={styles.headerRow}>
-        <Text style={[styles.title, { marginBottom: 0 }]}>{editing ? "Edit entry" : "Log a meeting"}</Text>
+        <Text style={[styles.title, { marginBottom: 0, flexShrink: 1, marginRight: 8 }]}>{editing ? "Edit entry" : "New Character Entry"}</Text>
         <DateField value={date} onChange={setDate} />
       </View>
       {saved && <Text style={[styles.link, { fontWeight: "600" }]}>Saved ✓</Text>}
