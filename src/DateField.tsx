@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Platform, Pressable, View } from "react-native";
 import { FONTS } from "./fonts";
-import { Text } from "./ui";
+import { entryFontSize, Text } from "./ui";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { formatDate, useSettings } from "./settings";
 import { colors, styles } from "./styles";
@@ -13,7 +13,7 @@ type Props = { value: string; onChange: (v: string) => void };
 // in, so it lines up with the box beside it. It shows the date in the user's chosen
 // format; the value itself is always YYYY-MM-DD.
 export function DateField({ value, onChange }: Props) {
-  const { dateFormat } = useSettings();
+  const { dateFormat, font } = useSettings();
   const [open, setOpen] = useState(false);
   const label = formatDate(value, dateFormat);
 
@@ -34,8 +34,9 @@ export function DateField({ value, onChange }: Props) {
           border: `1px solid ${colors.inputLine}`,
           borderRadius: 10,
           padding: "10px 12px",
-          fontSize: 15,
-          fontFamily: FONTS.lora.regular,
+          // Same font and size as the other text boxes.
+          fontSize: entryFontSize(font),
+          fontFamily: FONTS[font].regular,
           cursor: "pointer",
         },
       },
@@ -58,7 +59,7 @@ export function DateField({ value, onChange }: Props) {
       style={[styles.input, { marginBottom: 0, marginHorizontal: 0, flex: 1, justifyContent: "center" }]}
       onPress={() => setOpen(true)}
     >
-      <Text style={{ color: colors.inputFg, fontSize: 15 }}>{label}</Text>
+      <Text kind="entry" noScale style={{ color: colors.inputFg, fontSize: entryFontSize(font) }}>{label}</Text>
     </Pressable>
   );
 

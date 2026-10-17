@@ -28,6 +28,7 @@ export const styles = StyleSheet.create({
   inputOff: { opacity: 0.45 },
   labelRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 4, marginHorizontal: INDENT, minHeight: 18 },
   skip: { color: colors.acc, fontSize: 14, fontWeight: "600" },
+  skipSmall: { color: colors.acc, fontSize: 11, fontWeight: "600" }, // the Skip links above the entry boxes
   multi: { minHeight: 96, textAlignVertical: "top" },
   btn: { backgroundColor: colors.acc, borderRadius: 12, padding: 16, alignItems: "center", marginTop: 6, marginBottom: 14 },
   btnText: { color: colors.onAcc, fontWeight: "600", fontSize: 16 },

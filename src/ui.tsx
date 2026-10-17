@@ -19,6 +19,10 @@ type Extra = {
   noScale?: boolean; // use the fontSize exactly as given (the title is pre-fitted)
 };
 
+// The size text boxes actually render at: the base size scaled for the font, never under
+// 16px (iPhone Safari zooms into smaller text). The date box uses this to match them.
+export const entryFontSize = (font: FontKey, base = 15) => Math.max(base * FONTS[font].scale, 16);
+
 function resolve(style: any, font: FontKey, nested: boolean, noScale?: boolean): TextStyle {
   const flat: TextStyle = StyleSheet.flatten(style) ?? {};
   const face = FONTS[font];

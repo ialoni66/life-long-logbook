@@ -20,8 +20,7 @@ const PLACEHOLDERS: Record<Field, string> = {
 const notify = (msg: string) =>
   Platform.OS === "web" ? window.alert(msg) : Alert.alert("Missing info", msg);
 
-const DATE_COLUMN_WIDTH = 112; // the date box beside "Where we met"
-const MAX_TITLE_SIZE = 26;
+const MAX_TITLE_SIZE = 30;
 
 export function LogScreen({ editing, onSave, onCancel }: Props) {
   // Size the title so it always fits on one line.
@@ -83,7 +82,7 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
       <View style={[styles.labelRow, inline && { marginHorizontal: 0 }]}>
         <Text style={styles.label}>{LABELS[f]}</Text>
         <Pressable onPress={() => toggleSkip(f)} hitSlop={10}>
-          <Text style={styles.skip}>{skipped[f] ? "Undo skip" : "Skip"}</Text>
+          <Text style={styles.skipSmall}>{skipped[f] ? "Undo skip" : "Skip"}</Text>
         </Pressable>
       </View>
       <TextInput
@@ -105,8 +104,8 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
 
   return (
     <>
-      <View style={styles.headerRow}>
-        <Text noScale numberOfLines={1} style={[styles.title, { marginBottom: 0, fontSize: titleSize, flexShrink: 1 }]}>
+      <View style={[styles.headerRow, { justifyContent: "center" }]}>
+        <Text noScale numberOfLines={1} style={[styles.title, { marginBottom: 0, fontSize: titleSize, flexShrink: 1, textAlign: "center" }]}>
           {title}
         </Text>
       </View>
@@ -114,7 +113,8 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
       {field("name")}
       <View style={styles.rowWithDate}>
         <View style={{ flex: 1 }}>{field("location", true)}</View>
-        <View style={{ width: DATE_COLUMN_WIDTH }}>
+        {/* The date box is as wide as its text needs, so every font fits. */}
+        <View style={{ minWidth: 104, flexShrink: 0 }}>
           <View style={[styles.labelRow, { marginHorizontal: 0 }]}>
             <Text style={styles.label}>Date</Text>
           </View>
