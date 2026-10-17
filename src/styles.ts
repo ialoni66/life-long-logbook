@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 export const colors = {
-  bg: "#1b2130", card: "#323c56", fg: "#f4f6fb", mut: "#c6cee0", acc: "#6ea6ff", line: "#4d5a78",
+  bg: "#1b2130", card: "#3b4766", fg: "#f4f6fb", mut: "#c6cee0", acc: "#6ea6ff", line: "#4d5a78",
   onAcc: "#0e1420", // text on top of the accent color
   inputBg: "#f4ecc2", inputFg: "#1b1f2a", inputLine: "#d8cd96", placeholder: "#858585",
 };
