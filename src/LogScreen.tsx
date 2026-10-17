@@ -60,10 +60,11 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
 
   return (
     <>
-      <Text style={styles.title}>{editing ? "Edit entry" : "Log a meeting"}</Text>
+      <View style={styles.headerRow}>
+        <Text style={[styles.title, { marginBottom: 0 }]}>{editing ? "Edit entry" : "Log a meeting"}</Text>
+        <DateField value={date} onChange={setDate} />
+      </View>
       {saved && <Text style={[styles.link, { fontWeight: "600" }]}>Saved ✓</Text>}
-      <Text style={styles.label}>When</Text>
-      <DateField value={date} onChange={setDate} />
       {(Object.keys(LABELS) as Field[]).map((f) => (
         <React.Fragment key={f}>
           <View style={styles.labelRow}>

@@ -11,6 +11,7 @@ export const styles = StyleSheet.create({
   title: { fontSize: 24, fontWeight: "700", color: colors.fg, marginBottom: 12 },
   label: { color: colors.mut, fontSize: 13, marginBottom: 4 },
   input: { backgroundColor: colors.inputBg, color: colors.inputFg, borderWidth: 1, borderColor: colors.inputLine, borderRadius: 10, padding: 10, fontSize: 16, marginBottom: 10 },
+  headerRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 14 },
   inputOff: { opacity: 0.45 },
   labelRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 4 },
   skip: { color: colors.acc, fontSize: 13, fontWeight: "600" },
