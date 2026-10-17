@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Alert, Platform, Pressable, useWindowDimensions, View } from "react-native";
 import { FONTS } from "./fonts";
+import { INDENT } from "./styles";
 import { Text, TextInput } from "./ui";
 import { DateField } from "./DateField";
 import { colors, styles } from "./styles";
@@ -20,7 +21,7 @@ const notify = (msg: string) =>
   Platform.OS === "web" ? window.alert(msg) : Alert.alert("Missing info", msg);
 
 const DATE_CHIP_WIDTH = 104; // date chip plus the gap beside the title
-const MAX_TITLE_SIZE = 26;
+const MAX_TITLE_SIZE = 20;
 
 export function LogScreen({ editing, onSave, onCancel }: Props) {
   // Size the title so it always fits on one line next to the date chip.
@@ -120,11 +121,11 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
         autoCapitalize="none"
         autoCorrect={false}
       />
-      <Pressable style={styles.btn} onPress={submit}>
+      <Pressable style={[styles.btn, { marginHorizontal: INDENT }]} onPress={submit}>
         <Text style={styles.btnText}>{editing ? "Save changes" : "Save"}</Text>
       </Pressable>
       {editing && (
-        <Pressable style={styles.btn2} onPress={onCancel}><Text style={styles.btn2Text}>Cancel</Text></Pressable>
+        <Pressable style={[styles.btn2, { marginHorizontal: INDENT }]} onPress={onCancel}><Text style={styles.btn2Text}>Cancel</Text></Pressable>
       )}
     </>
   );

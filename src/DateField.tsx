@@ -48,7 +48,7 @@ export function DateField({ value, onChange }: Props) {
   const [y, m, d] = value.split("-").map(Number);
   const date = new Date(y, m - 1, d);
   const chip = (
-    <Pressable style={[styles.input, { marginBottom: 0, paddingVertical: 6 }]} onPress={() => setOpen(true)}>
+    <Pressable style={[styles.input, { marginBottom: 0, marginHorizontal: 0, paddingVertical: 6 }]} onPress={() => setOpen(true)}>
       <Text style={{ color: colors.inputFg }}>{label}</Text>
     </Pressable>
   );

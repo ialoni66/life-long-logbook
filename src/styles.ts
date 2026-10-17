@@ -6,12 +6,15 @@ export const colors = {
   inputBg: "#f4ecc2", inputFg: "#1b1f2a", inputLine: "#d8cd96", placeholder: "#858585",
 };
 
+export const INDENT = 28; // how far boxes (and the Skip links above them) are inset from the title
+
 export const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.bg },
   body: { padding: 20, paddingTop: 24, paddingBottom: 56, maxWidth: 640, width: "100%", alignSelf: "center" },
-  title: { fontSize: 24, fontWeight: "700", color: colors.fg, marginBottom: 18 },
-  label: { color: colors.mut, fontSize: 14, marginBottom: 3 },
-  input: { backgroundColor: colors.inputBg, color: colors.inputFg, borderWidth: 1, borderColor: colors.inputLine, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 14, fontSize: 16, marginBottom: 22 },
+  title: { fontSize: 20, fontWeight: "700", color: colors.fg, marginBottom: 18 },
+  label: { color: colors.mut, fontSize: 13, marginBottom: 4 },
+  // Boxes sit inset from the title and labels, which stay on the page's left edge.
+  input: { backgroundColor: colors.inputBg, color: colors.inputFg, borderWidth: 1, borderColor: colors.inputLine, borderRadius: 10, paddingVertical: 10, paddingHorizontal: 12, fontSize: 15, marginBottom: 18, marginHorizontal: INDENT },
   headerRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 26 },
   modalBack: { flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "center", padding: 24 },
   modalCard: { backgroundColor: colors.card, borderRadius: 16, padding: 16 },
@@ -19,9 +22,9 @@ export const styles = StyleSheet.create({
   option: { backgroundColor: colors.card, borderRadius: 12, borderWidth: 1, borderColor: colors.line, padding: 18, marginBottom: 14, flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   optionOn: { borderColor: colors.acc },
   inputOff: { opacity: 0.45 },
-  labelRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 3 },
+  labelRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 4, marginRight: INDENT },
   skip: { color: colors.acc, fontSize: 14, fontWeight: "600" },
-  multi: { minHeight: 120, textAlignVertical: "top" },
+  multi: { minHeight: 96, textAlignVertical: "top" },
   btn: { backgroundColor: colors.acc, borderRadius: 12, padding: 16, alignItems: "center", marginTop: 6, marginBottom: 14 },
   btnText: { color: colors.onAcc, fontWeight: "600", fontSize: 16 },
   btn2: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 12, padding: 16, alignItems: "center", marginBottom: 14 },
