@@ -42,7 +42,6 @@ export default function App() {
   useEffect(() => {
     load().then((d) => {
       latest.current = d; setData(d); setReady(true);
-      if (d.entries.length) setTab("search");
     });
   }, []);
 
