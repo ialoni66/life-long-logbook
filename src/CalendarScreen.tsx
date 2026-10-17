@@ -52,8 +52,8 @@ export function CalendarScreen({ data, onEdit, onDelete }: Props) {
           <Pressable key={i} style={cal.cell} disabled={!c} onPress={() => c && setSelected(c)}>
             {c && (
               <View style={[cal.day, c === selected && cal.daySel, c === today() && cal.dayToday]}>
-                <Text style={[cal.dayText, c === selected && { color: "#fff" }]}>{Number(c.slice(8))}</Text>
-                {counts[c] ? <View style={[cal.dot, c === selected && { backgroundColor: "#fff" }]} /> : null}
+                <Text style={[cal.dayText, c === selected && { color: colors.onAcc }]}>{Number(c.slice(8))}</Text>
+                {counts[c] ? <View style={[cal.dot, c === selected && { backgroundColor: colors.onAcc }]} /> : null}
               </View>
             )}
           </Pressable>

@@ -26,8 +26,8 @@
       "name": "Life-long Logbook",
       "shortName": "Logbook",
       "display": "standalone",
-      "backgroundColor": "#12151c",
-      "themeColor": "#12151c"
+      "backgroundColor": "#1b2130",
+      "themeColor": "#1b2130"
     },
     "experiments": {
       "baseUrl": "/life-long-logbook"

@@ -1,7 +1,8 @@
 import { StyleSheet } from "react-native";
 
 export const colors = {
-  bg: "#12151c", card: "#1e2330", fg: "#e8eaf0", mut: "#9aa3b5", acc: "#4a8af4", line: "#323a4e",
+  bg: "#1b2130", card: "#283046", fg: "#f4f6fb", mut: "#b4bdd0", acc: "#6ea6ff", line: "#44506b",
+  onAcc: "#0e1420", // text on top of the accent color
   inputBg: "#fff3a8", inputFg: "#1b1f2a", inputLine: "#e0cf6a", placeholder: "#8c8c8c",
 };
 
@@ -22,7 +23,7 @@ export const styles = StyleSheet.create({
   skip: { color: colors.acc, fontSize: 14, fontWeight: "600" },
   multi: { minHeight: 120, textAlignVertical: "top" },
   btn: { backgroundColor: colors.acc, borderRadius: 12, padding: 16, alignItems: "center", marginTop: 6, marginBottom: 14 },
-  btnText: { color: "#fff", fontWeight: "600", fontSize: 16 },
+  btnText: { color: colors.onAcc, fontWeight: "600", fontSize: 16 },
   btn2: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.line, borderRadius: 12, padding: 16, alignItems: "center", marginBottom: 14 },
   btn2Text: { color: colors.fg, fontSize: 16 },
   card: { backgroundColor: colors.card, borderRadius: 14, padding: 18, marginBottom: 16 },
@@ -39,7 +40,7 @@ export const styles = StyleSheet.create({
   chip: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 16, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.card },
   chipOn: { backgroundColor: colors.acc, borderColor: colors.acc },
   chipText: { color: colors.fg },
-  chipTextOn: { color: "#fff" },
+  chipTextOn: { color: colors.onAcc },
   link: { color: colors.acc, marginBottom: 12 },
   empty: { color: colors.mut, textAlign: "center", marginTop: 30 },
 });
