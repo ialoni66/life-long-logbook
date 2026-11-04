@@ -5,7 +5,11 @@ const path = require("path");
 const BASE = "/life-long-logbook"; // must match experiments.baseUrl in app.json
 const dist = path.join(__dirname, "..", "dist");
 
-fs.copyFileSync(path.join(__dirname, "..", "assets", "icon.png"), path.join(dist, "apple-touch-icon.png"));
+// Icons come from assets/ (the walnut card-file logo). iPhone uses the 180px apple-touch-icon.
+const assets = path.join(__dirname, "..", "assets");
+for (const name of ["apple-touch-icon.png", "icon-192.png", "icon-512.png"]) {
+  fs.copyFileSync(path.join(assets, name), path.join(dist, name));
+}
 
 fs.writeFileSync(
   path.join(dist, "manifest.webmanifest"),
@@ -17,7 +21,11 @@ fs.writeFileSync(
     display: "standalone",
     background_color: "#1b2130",
     theme_color: "#1b2130",
-    icons: [{ src: `${BASE}/apple-touch-icon.png`, sizes: "1024x1024", type: "image/png" }],
+    icons: [
+      { src: `${BASE}/icon-192.png`, sizes: "192x192", type: "image/png" },
+      { src: `${BASE}/icon-512.png`, sizes: "512x512", type: "image/png" },
+      { src: `${BASE}/apple-touch-icon.png`, sizes: "180x180", type: "image/png" },
+    ],
   })
 );
 
