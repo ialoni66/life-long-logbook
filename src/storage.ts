@@ -1,23 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fromV1 } from "./importer";
 import { defaultSettings, Settings } from "./settings";
-import { Data, Entry } from "./types";
+import { Data } from "./types";
 
 const KEY = "logbook.data.v2";
 const OLD_KEY = "logbook.data.v1";
-
-// Converts the earlier people + interactions format into entries.
-function fromV1(d: any): Data {
-  const nameOf = (id: string) => d.people?.find((p: any) => p.id === id)?.name ?? "";
-  return {
-    entries: (d.interactions ?? []).map((i: any): Entry => ({
-      id: i.id,
-      date: i.date,
-      name: nameOf(i.personId),
-      location: "",
-      notes: [i.summary, i.details].filter(Boolean).join("\n"),
-    })),
-  };
-}
 
 export function parseBackup(text: string): Data {
   const d = JSON.parse(text);
@@ -38,6 +25,26 @@ export async function load(): Promise<Data> {
 
 export async function save(data: Data) {
   await AsyncStorage.setItem(KEY, JSON.stringify(data));
+}
+
+// A copy of your entries kept just before an import (or an undo), so either can be reversed.
+export type Safety = { savedAt: string; reason: "import" | "undo"; data: Data };
+const SAFETY_KEY = "logbook.safety.v1";
+
+export async function loadSafety(): Promise<Safety | null> {
+  try {
+    const raw = await AsyncStorage.getItem(SAFETY_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      if (s && Array.isArray(s.data?.entries) && typeof s.savedAt === "string") return s;
+    }
+  } catch {}
+  return null;
+}
+
+// Throws if the copy can't be written, so callers can stop before changing anything.
+export async function saveSafety(s: Safety) {
+  await AsyncStorage.setItem(SAFETY_KEY, JSON.stringify(s));
 }
 
 const SETTINGS_KEY = "logbook.settings.v1";

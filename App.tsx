@@ -43,6 +43,13 @@ export default function App() {
   // The ref always holds the latest data, so several updates in one event don't overwrite each other.
   const latest = useRef(data);
   const update = (d: Data) => { latest.current = d; setData(d); save(d); };
+  // For whole-logbook changes like an import: store first, and only then show the new data,
+  // so a failed save leaves everything exactly as it was.
+  const replaceData = async (d: Data) => {
+    await save(d);
+    latest.current = d;
+    setData(d);
+  };
 
   const [settings, setSettings] = useState<Settings>(defaultSettings());
   // Make sure a font is loaded before it is used, so text never flashes in a fallback face.
@@ -92,12 +99,15 @@ export default function App() {
           )}
           {tab === "search" && (
             <SearchScreen
-              data={data} onEdit={edit} onDelete={deleteEntry} onImport={update}
+              data={data} onEdit={edit} onDelete={deleteEntry}
               onOpenSettings={() => setTab("settings")}
             />
           )}
           {tab === "settings" && (
-            <SettingsScreen settings={settings} onChange={changeSettings} onBack={() => setTab("search")} />
+            <SettingsScreen
+              settings={settings} onChange={changeSettings} onBack={() => setTab("search")}
+              data={data} onReplaceData={replaceData}
+            />
           )}
           {tab === "calendar" && <CalendarScreen data={data} onEdit={edit} onDelete={deleteEntry} />}
         </ScrollView>

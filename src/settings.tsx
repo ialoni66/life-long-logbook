@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 import { DEFAULT_FONT, FontKey } from "./fonts";
 
 export type DateFormat = "MDY" | "DMY";
-export type Settings = { dateFormat: DateFormat; font: FontKey };
+export type Settings = { dateFormat: DateFormat; font: FontKey; lastSaved?: string };
 
 // Until the user picks one, follow the device's own convention.
 export function defaultSettings(): Settings {
