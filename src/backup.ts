@@ -4,6 +4,9 @@ import { Data, today } from "./types";
 
 export type SaveResult = "shared" | "downloaded" | "cancelled" | "text";
 
+// Saved files are named after the app, with the date so each save is its own file.
+const FILE_PREFIX = "rolodex-logs";
+
 const isIPhone = () =>
   typeof navigator !== "undefined" &&
   (/iPad|iPhone|iPod/.test(navigator.userAgent) ||
@@ -13,11 +16,11 @@ const isIPhone = () =>
 // "Save to Files" (or iCloud Drive); on a computer the file downloads.
 export async function saveBackupFile(data: Data): Promise<SaveResult> {
   const json = JSON.stringify(
-    { app: "life-long-logbook", savedAt: new Date().toISOString(), entries: data.entries },
+    { app: FILE_PREFIX, savedAt: new Date().toISOString(), entries: data.entries },
     null,
     2
   );
-  const filename = `logbook-${today()}.json`;
+  const filename = `${FILE_PREFIX}-${today()}.json`;
 
   if (Platform.OS !== "web") {
     await Share.share({ message: json });
@@ -27,7 +30,7 @@ export async function saveBackupFile(data: Data): Promise<SaveResult> {
   const file = new File([json], filename, { type: "application/json" });
   if (isIPhone() && (navigator as any).canShare?.({ files: [file] })) {
     try {
-      await (navigator as any).share({ files: [file], title: "Logbook backup" });
+      await (navigator as any).share({ files: [file], title: "Rolodex logs" });
       return "shared";
     } catch (e: any) {
       if (e?.name === "AbortError") return "cancelled"; // the user closed the share sheet
