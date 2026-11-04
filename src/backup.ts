@@ -61,7 +61,7 @@ export function pickBackupText(): Promise<string | null> {
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return resolve(null);
-      if (file.size > MAX_FILE_BYTES) return reject(new Error("That file is too large to be a Logbook file."));
+      if (file.size > MAX_FILE_BYTES) return reject(new Error("That file is too large to be a Rolodex file."));
       try {
         resolve(await file.text());
       } catch {

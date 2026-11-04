@@ -14,8 +14,8 @@ for (const name of ["apple-touch-icon.png", "icon-192.png", "icon-512.png"]) {
 fs.writeFileSync(
   path.join(dist, "manifest.webmanifest"),
   JSON.stringify({
-    name: "Life-long Logbook",
-    short_name: "Logbook",
+    name: "Rolodex",
+    short_name: "Rolodex",
     start_url: `${BASE}/`,
     scope: `${BASE}/`,
     display: "standalone",
@@ -34,7 +34,7 @@ const tags = `
 <link rel="apple-touch-icon" href="${BASE}/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Logbook">
+<meta name="apple-mobile-web-app-title" content="Rolodex">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="color-scheme" content="dark">
 <style>html,body{background:#1b2130}</style>`;

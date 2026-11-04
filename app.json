@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Life-long Logbook",
+    "name": "Rolodex",
     "slug": "life-long-logbook",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -23,8 +23,8 @@
       "bundler": "metro",
       "output": "single",
       "favicon": "./assets/favicon.png",
-      "name": "Life-long Logbook",
-      "shortName": "Logbook",
+      "name": "Rolodex",
+      "shortName": "Rolodex",
       "display": "standalone",
       "backgroundColor": "#1b2130",
       "themeColor": "#1b2130"

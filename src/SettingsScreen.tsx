@@ -171,7 +171,7 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
           <Text style={styles.cardName}>Review before importing</Text>
           <Text style={styles.cardText}>
             The file has {plural(review.entries.length, "entry", "entries")}.{" "}
-            {plural(review.fresh.length, "is new", "are new")}, and {review.alreadyHere} {review.alreadyHere === 1 ? "is" : "are"} already in your logbook.
+            {plural(review.fresh.length, "is new", "are new")}, and {review.alreadyHere} {review.alreadyHere === 1 ? "is" : "are"} already in your Rolodex.
           </Text>
           {review.invalid > 0 && (
             <Text style={styles.cardSub}>
@@ -188,7 +188,7 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
                 </Pressable>
               ) : (
                 <Text style={[styles.cardText, { marginBottom: 10 }]}>
-                  There's nothing new to add. Everything in this file is already in your logbook.
+                  There's nothing new to add. Everything in this file is already in your Rolodex.
                 </Text>
               )}
               {data.entries.length > 0 && (

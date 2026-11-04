@@ -59,14 +59,14 @@ export function parseBackupText(text: string): ParsedBackup {
   try {
     data = JSON.parse(text.trim().replace(/^﻿/, ""));
   } catch {
-    throw new Error("This file can't be read. It doesn't look like a saved Logbook file.");
+    throw new Error("This file can't be read. It doesn't look like a saved Rolodex file.");
   }
 
   let list: unknown[];
   if (Array.isArray(data)) list = data;
   else if (Array.isArray(data?.entries)) list = data.entries;
   else if (Array.isArray(data?.interactions)) list = fromV1(data).entries;
-  else throw new Error("This file doesn't look like a Logbook file, so nothing was imported.");
+  else throw new Error("This file doesn't look like a Rolodex file, so nothing was imported.");
 
   const seen = new Set<string>();
   const entries: Entry[] = [];
