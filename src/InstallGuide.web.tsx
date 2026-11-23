@@ -136,9 +136,9 @@ const STEPS: Step[] = [
     figure: () => <FigureSheet />,
   },
   {
-    title: "Keep “Open as Web App” on, then tap Add",
-    body: "The name is already Rolodex. Leave the green switch on, then tap Add in the top corner.",
-    note: "If that switch is off, the icon opens Safari instead of the app. If that happens, delete the icon and add it again with the switch on.",
+    title: "Tap Add",
+    body: "The name is already Rolodex. If you see an “Open as Web App” switch, leave it on (green). Then tap Add in the top corner.",
+    note: "On newer iPhones, if that switch is off the icon opens Safari instead of the app. If that happens, delete the icon and add it again with the switch on. Older iPhones don't show the switch, so just tap Add.",
     figure: (iconUrl) => <FigureAdd iconUrl={iconUrl} />,
   },
   {
