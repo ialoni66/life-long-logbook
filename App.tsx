@@ -11,6 +11,8 @@ import { LogScreen } from "./src/LogScreen";
 import { SearchScreen } from "./src/SearchScreen";
 import { SettingsScreen } from "./src/SettingsScreen";
 import { hideSplash } from "./src/splash";
+import { InstallGuide } from "./src/InstallGuide";
+import { shouldShowInstallGuide } from "./src/install";
 import { defaultSettings, Settings, SettingsProvider } from "./src/settings";
 import { load, loadSettings, save, saveSettings } from "./src/storage";
 import { styles } from "./src/styles";
@@ -40,6 +42,8 @@ export default function App() {
   const [ready, setReady] = useState(false);
   const [tab, setTab] = useState<Tab>("log");
   const [editing, setEditing] = useState<Entry | null>(null);
+  // Someone who opens the link in a browser on an iPhone sees the install guide instead of the app.
+  const [guide, setGuide] = useState(() => shouldShowInstallGuide());
 
   // The ref always holds the latest data, so several updates in one event don't overwrite each other.
   const latest = useRef(data);
@@ -86,6 +90,7 @@ export default function App() {
   const edit = (e: Entry) => { setEditing(e); setTab("log"); };
 
   if (!ready) return null;
+  if (guide) return <InstallGuide onUseInBrowser={() => setGuide(false)} />;
 
   return (
     <SettingsProvider value={settings}>
