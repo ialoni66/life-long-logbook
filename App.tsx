@@ -96,7 +96,17 @@ export default function App() {
   const edit = (e: Entry) => { setEditing(e); setTab("log"); };
 
   if (!ready) return null;
-  if (guide) return <InstallGuide onUseInBrowser={() => setGuide(false)} />;
+  if (guide) {
+    return (
+      <InstallGuide
+        onUseInBrowser={(lang) => {
+          setGuide(false);
+          // someone who read the guide in Hebrew gets the app in Hebrew too
+          if (lang !== settings.language) changeSettings({ ...settings, language: lang });
+        }}
+      />
+    );
+  }
 
   return (
     <SettingsProvider value={settings}>
