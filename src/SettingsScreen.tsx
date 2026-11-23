@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Platform, Pressable, View } from "react-native";
 import { pickBackupText, saveBackupFile } from "./backup";
-import { FONT_KEYS, FONTS, FontKey } from "./fonts";
+import { FONT_KEYS, FONTS, FontKey, loadFont } from "./fonts";
 import { parseBackupText, planImport } from "./importer";
 import { DateFormat, FORMAT_LABELS, formatDate, Settings } from "./settings";
 import { loadSafety, Safety, saveSafety } from "./storage";
@@ -33,6 +33,8 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
   const [safety, setSafety] = useState<Safety | null>(null);
 
   useEffect(() => { loadSafety().then(setSafety); }, []);
+  // The font previews need every font, so they are fetched only now, not when the app starts.
+  useEffect(() => { FONT_KEYS.forEach((k) => loadFont(k)); }, []);
 
   // ---- Save file
   const saveFile = async () => {

@@ -30,8 +30,11 @@ fs.writeFileSync(
 );
 
 const splash = require("./splash");
+const speed = require("./speed");
+const fonts = speed.fontMap(BASE, dist);
 
 const tags = `
+${speed.preloadScript(fonts)}
 <link rel="manifest" href="${BASE}/manifest.webmanifest">
 <link rel="apple-touch-icon" href="${BASE}/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -39,7 +42,8 @@ const tags = `
 <meta name="apple-mobile-web-app-title" content="Rolodex">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="color-scheme" content="dark">
-<style>html,body{background:#1b2130}${splash.css}</style>`;
+<style>html,body{background:#1b2130}${splash.css}</style>
+${speed.registerScript(BASE)}`;
 
 const file = path.join(dist, "index.html");
 let html = fs.readFileSync(file, "utf8");
@@ -53,4 +57,9 @@ html = withSplash;
 fs.writeFileSync(file, html);
 
 fs.writeFileSync(path.join(dist, ".nojekyll"), "");
-console.log("postbuild done");
+
+// The service worker is written last, so its version covers every other file in the build.
+const jsUrl = (html.match(/<script src="([^"]+\.js)"/) || [])[1];
+if (!jsUrl) throw new Error("postbuild: could not find the app's script in index.html");
+const sw = speed.writeServiceWorker(BASE, dist, fonts, jsUrl);
+console.log(`postbuild done (offline copy ${sw.version}, ${sw.precache.length} files saved up front)`);

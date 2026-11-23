@@ -2,8 +2,10 @@ import { Platform } from "react-native";
 
 // The loading screen is part of the page itself (added at build time by scripts/postbuild.js),
 // so it shows before any app code has arrived. This fades it away once the app is ready.
-const MIN_VISIBLE_MS = 700; // so it never just flashes by when the app opens instantly
-const FADE_MS = 450;
+// A short minimum stops it from flickering when the app is ready almost at once. It used to be 0.7 s,
+// but now that repeat opens are instant it would only have slowed them down.
+const MIN_VISIBLE_MS = 300;
+const FADE_MS = 300;
 
 export function hideSplash() {
   if (Platform.OS !== "web" || typeof document === "undefined") return;

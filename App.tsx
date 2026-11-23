@@ -4,7 +4,7 @@ import {
   ScrollView, View,
 } from "react-native";
 import { Text } from "./src/ui";
-import { DEFAULT_FONT, FONT_KEYS, FONTS, loadFont, UI_FONT } from "./src/fonts";
+import { DEFAULT_FONT, FONTS, loadFont, UI_FONT } from "./src/fonts";
 import { StatusBar } from "expo-status-bar";
 import { CalendarScreen } from "./src/CalendarScreen";
 import { LogScreen } from "./src/LogScreen";
@@ -65,7 +65,7 @@ export default function App() {
       const s = FONTS[loaded.font] ? loaded : { ...loaded, font: DEFAULT_FONT };
       await Promise.all([loadFont(UI_FONT), loadFont(s.font)]);
       latest.current = d; setData(d); setSettings(s); setReady(true);
-      FONT_KEYS.forEach((k) => loadFont(k)); // the rest load quietly for the Settings previews
+      // The other fonts are NOT loaded here: they are only fetched if Settings is opened (see SettingsScreen).
     });
   }, []);
 

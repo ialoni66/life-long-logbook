@@ -71,7 +71,7 @@ const svg = `<svg viewBox="130 110 764 800" xmlns="http://www.w3.org/2000/svg" a
 </svg>`;
 
 const css = `
-#rx-splash{position:fixed;top:0;right:0;bottom:0;left:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(ellipse at 50% 38%,#27324b 0%,#1b2130 72%);opacity:1;transition:opacity .45s ease}
+#rx-splash{position:fixed;top:0;right:0;bottom:0;left:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(ellipse at 50% 38%,#27324b 0%,#1b2130 72%);opacity:1;transition:opacity .3s ease}
 #rx-splash.rx-hide{opacity:0;pointer-events:none}
 #rx-splash svg{display:block;width:min(64vw,300px);height:auto;overflow:visible}
 #rx-splash .rx-name{font-family:Lora,Georgia,'Times New Roman',serif;font-weight:700;font-size:30px;letter-spacing:.04em;color:#f4ecc2;animation:rx-pulse 2.4s ease-in-out infinite}
