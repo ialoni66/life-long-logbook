@@ -3,6 +3,13 @@
 import { uid } from "./types";
 import type { Entry } from "./types";
 
+// Why a file was refused. The screen turns the code into a message in the chosen language.
+export type ImportProblemCode = "unreadable" | "notRolodex" | "empty" | "noneReadable";
+export class ImportProblem extends Error {
+  code: ImportProblemCode;
+  constructor(code: ImportProblemCode) { super(code); this.code = code; }
+}
+
 export type ParsedBackup = {
   entries: Entry[]; // valid entries found in the file, duplicates inside the file removed
   invalid: number; // entries in the file that were unreadable and left out
@@ -59,14 +66,14 @@ export function parseBackupText(text: string): ParsedBackup {
   try {
     data = JSON.parse(text.trim().replace(/^﻿/, ""));
   } catch {
-    throw new Error("This file can't be read. It doesn't look like a saved Rolodex file.");
+    throw new ImportProblem("unreadable");
   }
 
   let list: unknown[];
   if (Array.isArray(data)) list = data;
   else if (Array.isArray(data?.entries)) list = data.entries;
   else if (Array.isArray(data?.interactions)) list = fromV1(data).entries;
-  else throw new Error("This file doesn't look like a Rolodex file, so nothing was imported.");
+  else throw new ImportProblem("notRolodex");
 
   const seen = new Set<string>();
   const entries: Entry[] = [];
@@ -79,11 +86,7 @@ export function parseBackupText(text: string): ParsedBackup {
     entries.push(e);
   }
   if (entries.length === 0) {
-    throw new Error(
-      list.length === 0
-        ? "This file has no entries in it, so nothing was imported."
-        : "None of the entries in this file could be read, so nothing was imported."
-    );
+    throw new ImportProblem(list.length === 0 ? "empty" : "noneReadable");
   }
   return { entries, invalid };
 }

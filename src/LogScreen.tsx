@@ -6,26 +6,25 @@ import { Text, TextInput } from "./ui";
 import { DateField } from "./DateField";
 import { colors, styles } from "./styles";
 import { Entry, today } from "./types";
+import { useT } from "./i18n";
 
 type Props = { editing: Entry | null; onSave: (e: Omit<Entry, "id">, id?: string) => void; onCancel: () => void };
 type Field = "name" | "location" | "notes";
 
-const LABELS: Record<Field, string> = { name: "Nickname", location: "Where we met", notes: "Notes" };
-const PLACEHOLDERS: Record<Field, string> = {
-  name: "Name (if you remember it)",
-  location: "Location",
-  notes: "What they were like, what you talked about, anything else",
-};
+const FIELDS: Field[] = ["name", "location", "notes"];
 
-const notify = (msg: string) =>
-  Platform.OS === "web" ? window.alert(msg) : Alert.alert("Missing info", msg);
+const notify = (title: string, msg: string) =>
+  Platform.OS === "web" ? window.alert(msg) : Alert.alert(title, msg);
 
 const MAX_TITLE_SIZE = 30;
 
 export function LogScreen({ editing, onSave, onCancel }: Props) {
   // Size the title so it always fits on one line.
+  const t = useT();
+  const LABELS: Record<Field, string> = { name: t.nickname, location: t.whereMet, notes: t.notes };
+  const PLACEHOLDERS: Record<Field, string> = { name: t.phName, location: t.phLocation, notes: t.phNotes };
   const { width } = useWindowDimensions();
-  const title = editing ? "Edit entry" : "New Character Entry";
+  const title = editing ? t.editTitle : t.newTitle;
   const room = Math.min(width, 640) - 40;
   const titleSize = Math.max(16, Math.min(MAX_TITLE_SIZE, room / (title.length * FONTS.lora.charWidth)));
 
@@ -49,17 +48,15 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
   const toggleSkip = (f: Field) => setSkipped((p) => ({ ...p, [f]: !p[f] }));
 
   const submit = () => {
-    const fields = Object.keys(LABELS) as Field[];
+    const fields = FIELDS;
     const empty = fields.filter((f) => !skipped[f] && !values[f].trim());
     if (empty.length) {
       // Nothing is cleared: the user keeps everything typed so far.
-      return notify(
-        `Please fill in ${empty.map((f) => LABELS[f]).join(", ")}, or tap Skip if you have nothing to add.`
-      );
+      return notify(t.missingInfo, t.fillIn(empty.map((f) => LABELS[f]).join(", ")));
     }
     const out = (f: Field) => (skipped[f] ? "" : values[f].trim());
     if (!out("name") && !out("location") && !out("notes") && !contact.trim()) {
-      return notify("Add at least one of Nickname, Where we met, Contact or Notes.");
+      return notify(t.missingInfo, t.needOne);
     }
     onSave(
       { date, name: out("name"), location: out("location"), contact: contact.trim(), notes: out("notes") },
@@ -82,7 +79,7 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
       <View style={[styles.labelRow, inline && { marginHorizontal: 0 }]}>
         <Text style={styles.label}>{LABELS[f]}</Text>
         <Pressable onPress={() => toggleSkip(f)} hitSlop={10}>
-          <Text style={styles.skipSmall}>{skipped[f] ? "Undo skip" : "Skip"}</Text>
+          <Text style={styles.skipSmall}>{skipped[f] ? t.undoSkip : t.skip}</Text>
         </Pressable>
       </View>
       <TextInput
@@ -94,7 +91,7 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
         ]}
         value={values[f]}
         onChangeText={(v) => set(f, v)}
-        placeholder={skipped[f] ? "Skipped" : PLACEHOLDERS[f]}
+        placeholder={skipped[f] ? t.skipped : PLACEHOLDERS[f]}
         placeholderTextColor={colors.placeholder}
         multiline={f === "notes"}
         editable={!skipped[f]}
@@ -109,36 +106,36 @@ export function LogScreen({ editing, onSave, onCancel }: Props) {
           {title}
         </Text>
       </View>
-      {saved && <Text style={[styles.link, { fontWeight: "600" }]}>Saved ✓</Text>}
+      {saved && <Text style={[styles.link, { fontWeight: "600" }]}>{t.saved}</Text>}
       {field("name")}
       <View style={styles.rowWithDate}>
         <View style={{ flex: 1 }}>{field("location", true)}</View>
         {/* The date box is as wide as its text needs, so every font fits. */}
         <View style={{ minWidth: 104, flexShrink: 0 }}>
           <View style={[styles.labelRow, { marginHorizontal: 0 }]}>
-            <Text style={styles.label}>Date</Text>
+            <Text style={styles.label}>{t.date}</Text>
           </View>
           <DateField value={date} onChange={setDate} />
         </View>
       </View>
       {field("notes")}
       <View style={styles.labelRow}>
-        <Text style={styles.label}>Contact</Text>
+        <Text style={styles.label}>{t.contact}</Text>
       </View>
       <TextInput
         style={styles.input}
         value={contact}
         onChangeText={setContact}
-        placeholder="Phone, email, social handle..."
+        placeholder={t.phContact}
         placeholderTextColor={colors.placeholder}
         autoCapitalize="none"
         autoCorrect={false}
       />
       <Pressable style={[styles.btn, { marginHorizontal: INDENT }]} onPress={submit}>
-        <Text style={styles.btnText}>{editing ? "Save changes" : "Save"}</Text>
+        <Text style={styles.btnText}>{editing ? t.saveChanges : t.save}</Text>
       </Pressable>
       {editing && (
-        <Pressable style={[styles.btn2, { marginHorizontal: INDENT }]} onPress={onCancel}><Text style={styles.btn2Text}>Cancel</Text></Pressable>
+        <Pressable style={[styles.btn2, { marginHorizontal: INDENT }]} onPress={onCancel}><Text style={styles.btn2Text}>{t.cancel}</Text></Pressable>
       )}
     </>
   );

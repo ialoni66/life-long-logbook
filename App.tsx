@@ -4,7 +4,9 @@ import {
   ScrollView, View,
 } from "react-native";
 import { Text } from "./src/ui";
-import { DEFAULT_FONT, FONTS, loadFont, UI_FONT } from "./src/fonts";
+import { DEFAULT_FONT, FONTS, loadFont, loadHebrewFont, UI_FONT } from "./src/fonts";
+import { STRINGS, Strings } from "./src/strings";
+import { isRTL } from "./src/lang";
 import { StatusBar } from "expo-status-bar";
 import { CalendarScreen } from "./src/CalendarScreen";
 import { LogScreen } from "./src/LogScreen";
@@ -20,19 +22,16 @@ import { Data, Entry, uid } from "./src/types";
 
 // "settings" is reached from the gear on the Search page and has no tab of its own.
 type Tab = "log" | "search" | "calendar" | "settings";
-const TABS: { key: Tab; label: string }[] = [
-  { key: "log", label: "+ Log" },
-  { key: "search", label: "Search" },
-  { key: "calendar", label: "Calendar" },
-];
+const tabLabel = (s: Strings, k: Tab) => (k === "log" ? s.tabLog : k === "search" ? s.tabSearch : s.tabCalendar);
+const TAB_KEYS: Tab[] = ["log", "search", "calendar"];
 
-const confirmDelete = (onYes: () => void) => {
+const confirmDelete = (s: Strings, onYes: () => void) => {
   if (Platform.OS === "web") {
-    if (window.confirm("Delete this entry?")) onYes();
+    if (window.confirm(s.deleteConfirm)) onYes();
   } else {
-    Alert.alert("Delete this entry?", undefined, [
-      { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: onYes },
+    Alert.alert(s.deleteConfirm, undefined, [
+      { text: s.cancel, style: "cancel" },
+      { text: s.delete, style: "destructive", onPress: onYes },
     ]);
   }
 };
@@ -59,7 +58,7 @@ export default function App() {
   const [settings, setSettings] = useState<Settings>(defaultSettings());
   // Make sure a font is loaded before it is used, so text never flashes in a fallback face.
   const changeSettings = async (s: Settings) => {
-    await loadFont(s.font);
+    await Promise.all([loadFont(s.font), s.language === "he" ? loadHebrewFont() : null]);
     setSettings(s);
     saveSettings(s);
   };
@@ -67,11 +66,18 @@ export default function App() {
   useEffect(() => {
     Promise.all([load(), loadSettings()]).then(async ([d, loaded]) => {
       const s = FONTS[loaded.font] ? loaded : { ...loaded, font: DEFAULT_FONT };
-      await Promise.all([loadFont(UI_FONT), loadFont(s.font)]);
+      await Promise.all([loadFont(UI_FONT), loadFont(s.font), s.language === "he" ? loadHebrewFont() : null]);
       latest.current = d; setData(d); setSettings(s); setReady(true);
       // The other fonts are NOT loaded here: they are only fetched if Settings is opened (see SettingsScreen).
     });
   }, []);
+
+  // The page's direction and language follow the chosen language (this also flips every row on screen).
+  useEffect(() => {
+    if (Platform.OS !== "web" || typeof document === "undefined") return;
+    document.documentElement.dir = isRTL(settings.language) ? "rtl" : "ltr";
+    document.documentElement.lang = settings.language;
+  }, [settings.language]);
 
   // Once everything is loaded, fade out the loading screen.
   useEffect(() => { if (ready) hideSplash(); }, [ready]);
@@ -86,7 +92,7 @@ export default function App() {
     if (id) { setEditing(null); setTab("search"); }
   };
   const deleteEntry = (id: string) =>
-    confirmDelete(() => update({ entries: latest.current.entries.filter((e) => e.id !== id) }));
+    confirmDelete(STRINGS[settings.language], () => update({ entries: latest.current.entries.filter((e) => e.id !== id) }));
   const edit = (e: Entry) => { setEditing(e); setTab("log"); };
 
   if (!ready) return null;
@@ -122,13 +128,13 @@ export default function App() {
         </ScrollView>
       </KeyboardAvoidingView>
       <View style={styles.tabs}>
-        {TABS.map((t) => (
+        {TAB_KEYS.map((k) => (
           <Pressable
-            key={t.key} style={styles.tab}
-            onPress={() => { if (t.key !== "log") setEditing(null); setTab(t.key); }}
+            key={k} style={styles.tab}
+            onPress={() => { if (k !== "log") setEditing(null); setTab(k); }}
           >
-            <Text style={[styles.tabText, (tab === t.key || (tab === "settings" && t.key === "search")) && styles.tabOn]}>
-              {t.label}
+            <Text style={[styles.tabText, (tab === k || (tab === "settings" && k === "search")) && styles.tabOn]}>
+              {tabLabel(STRINGS[settings.language], k)}
             </Text>
           </Pressable>
         ))}

@@ -5,13 +5,17 @@ import { EntryCard } from "./EntryCard";
 import { formatDate, useSettings } from "./settings";
 import { colors, styles } from "./styles";
 import { Data, Entry, today, ymd } from "./types";
+import { useT } from "./i18n";
 
 type Props = { data: Data; onEdit: (e: Entry) => void; onDelete: (id: string) => void };
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+// Short weekday names in the chosen language (Sunday first), e.g. "Sun" or "א׳".
+const weekdays = (locale: string) =>
+  Array.from({ length: 7 }, (_, i) => new Date(2023, 0, 1 + i).toLocaleDateString(locale, { weekday: "short" }));
 
 export function CalendarScreen({ data, onEdit, onDelete }: Props) {
   const { dateFormat } = useSettings();
+  const t = useT();
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth());
@@ -38,14 +42,14 @@ export function CalendarScreen({ data, onEdit, onDelete }: Props) {
   return (
     <>
       <View style={cal.header}>
-        <Pressable onPress={() => shift(-1)}><Text style={cal.arrow}>‹</Text></Pressable>
+        <Pressable onPress={() => shift(-1)}><Text style={cal.arrow}>{t.rtl ? "›" : "‹"}</Text></Pressable>
         <Text style={styles.title}>
-          {first.toLocaleString(undefined, { month: "long", year: "numeric" })}
+          {first.toLocaleString(t.locale, { month: "long", year: "numeric" })}
         </Text>
-        <Pressable onPress={() => shift(1)}><Text style={cal.arrow}>›</Text></Pressable>
+        <Pressable onPress={() => shift(1)}><Text style={cal.arrow}>{t.rtl ? "‹" : "›"}</Text></Pressable>
       </View>
       <View style={cal.row}>
-        {DAYS.map((d) => <Text key={d} style={cal.dow}>{d}</Text>)}
+        {weekdays(t.locale).map((d) => <Text key={d} style={cal.dow}>{d}</Text>)}
       </View>
       <View style={cal.grid}>
         {cells.map((c, i) => (
@@ -60,7 +64,7 @@ export function CalendarScreen({ data, onEdit, onDelete }: Props) {
         ))}
       </View>
       <Text style={[styles.label, { marginTop: 14 }]}>{formatDate(selected, dateFormat)}</Text>
-      {dayEntries.length === 0 && <Text style={styles.empty}>Nothing logged this day.</Text>}
+      {dayEntries.length === 0 && <Text style={styles.empty}>{t.nothingDay}</Text>}
       {dayEntries.map((e) => <EntryCard key={e.id} entry={e} onEdit={onEdit} onDelete={onDelete} />)}
     </>
   );

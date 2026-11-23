@@ -5,6 +5,7 @@ import { highlight, Query } from "./searchEngine";
 import { formatDate, useSettings } from "./settings";
 import { colors, styles } from "./styles";
 import { Entry } from "./types";
+import { useT } from "./i18n";
 
 type Props = {
   entry: Entry;
@@ -26,11 +27,12 @@ function Marked({ text, query }: { text: string; query?: Query | null }) {
 
 export function EntryCard({ entry, query, onEdit, onDelete }: Props) {
   const { dateFormat } = useSettings();
+  const t = useT();
   return (
     <View style={styles.card}>
       <View style={styles.cardTop}>
         <Text kind="entry" style={styles.cardName}>
-          {entry.name ? <Marked text={entry.name} query={query} /> : "(no name)"}
+          {entry.name ? <Marked text={entry.name} query={query} /> : t.noName}
         </Text>
         <Text style={styles.cardDate}>{formatDate(entry.date, dateFormat)}</Text>
       </View>
@@ -44,8 +46,8 @@ export function EntryCard({ entry, query, onEdit, onDelete }: Props) {
         <Text kind="entry" style={styles.cardText}><Marked text={entry.notes} query={query} /></Text>
       )}
       <View style={[styles.cardTop, { marginTop: 8 }]}>
-        <Pressable onPress={() => onEdit(entry)}><Text style={styles.link}>Edit</Text></Pressable>
-        <Pressable onPress={() => onDelete(entry.id)}><Text style={styles.cardSub}>Delete</Text></Pressable>
+        <Pressable onPress={() => onEdit(entry)}><Text style={styles.link}>{t.edit}</Text></Pressable>
+        <Pressable onPress={() => onDelete(entry.id)}><Text style={styles.cardSub}>{t.delete}</Text></Pressable>
       </View>
     </View>
   );

@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Alert, Platform, Pressable, View } from "react-native";
 import { pickBackupText, saveBackupFile } from "./backup";
 import { FONT_KEYS, FONTS, FontKey, loadFont } from "./fonts";
-import { parseBackupText, planImport } from "./importer";
+import { ImportProblem, parseBackupText, planImport } from "./importer";
+import { useT } from "./i18n";
+import { LANG_NAMES, LANGS } from "./lang";
 import { DateFormat, FORMAT_LABELS, formatDate, Settings } from "./settings";
 import { loadSafety, Safety, saveSafety } from "./storage";
 import { colors, styles } from "./styles";
@@ -22,10 +24,10 @@ type Status = { kind: "ok" | "error" | "info"; text: string } | null;
 type Review = { entries: Entry[]; invalid: number; fresh: Entry[]; alreadyHere: number };
 
 const ERROR_COLOR = "#ff9b9b";
-const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
-const when = (iso: string) => new Date(iso).toLocaleString();
 
 export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData }: Props) {
+  const t = useT();
+  const when = (iso: string) => new Date(iso).toLocaleString(t.locale);
   const [status, setStatus] = useState<Status>(null);
   const [review, setReview] = useState<Review | null>(null);
   const [confirmReplace, setConfirmReplace] = useState(false);
@@ -40,7 +42,7 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
   const saveFile = async () => {
     setReview(null);
     if (data.entries.length === 0) {
-      return setStatus({ kind: "info", text: "You have no entries yet, so there is nothing to save." });
+      return setStatus({ kind: "info", text: t.noEntriesToSave });
     }
     try {
       const result = await saveBackupFile(data);
@@ -50,13 +52,13 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
         kind: "ok",
         text:
           result === "shared"
-            ? "Choose “Save to Files” in the sheet that opened to keep your file."
+            ? t.savedShared
             : result === "text"
-            ? "Your entries were shared as text."
-            : "Your file was saved to your downloads.",
+            ? t.savedText
+            : t.savedDownloads,
       });
     } catch {
-      setStatus({ kind: "error", text: "The file couldn't be created. Your entries are unchanged." });
+      setStatus({ kind: "error", text: t.saveFail });
     }
   };
 
@@ -65,7 +67,7 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
     setStatus(null);
     setConfirmReplace(false);
     if (Platform.OS !== "web") {
-      return Alert.alert("Import isn't available in this build yet.");
+      return Alert.alert(t.importUnavailable);
     }
     try {
       const text = await pickBackupText();
@@ -76,7 +78,10 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
       setReview({ entries: parsed.entries, invalid: parsed.invalid, fresh: plan.fresh, alreadyHere: plan.alreadyHere });
     } catch (e: any) {
       setReview(null);
-      setStatus({ kind: "error", text: e?.message ?? "That file couldn't be imported. Nothing was changed." });
+      const text = e instanceof ImportProblem
+        ? { unreadable: t.importUnreadable, notRolodex: t.importNotRolodex, empty: t.importEmpty, noneReadable: t.importNoneReadable }[e.code]
+        : t.importFailed;
+      setStatus({ kind: "error", text });
     }
   };
 
@@ -88,13 +93,13 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
       try {
         await saveSafety(copy);
       } catch {
-        setStatus({ kind: "error", text: "A safety copy couldn't be saved, so nothing was changed." });
+        setStatus({ kind: "error", text: t.safetyFail });
         return;
       }
       try {
         await onReplaceData({ entries: next });
       } catch {
-        setStatus({ kind: "error", text: "Your entries couldn't be stored, so nothing was changed." });
+        setStatus({ kind: "error", text: t.storeFail });
         return;
       }
       setSafety(copy);
@@ -108,11 +113,11 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
 
   const addNew = () => {
     if (!review) return;
-    apply([...data.entries, ...review.fresh], `Added ${plural(review.fresh.length, "new entry", "new entries")}. Your previous entries are kept as a safety copy.`);
+    apply([...data.entries, ...review.fresh], t.addedDone(review.fresh.length));
   };
   const replaceAll = () => {
     if (!review) return;
-    apply(review.entries, `Replaced your entries with the ${plural(review.entries.length, "entry", "entries")} from the file. Your previous entries are kept as a safety copy.`);
+    apply(review.entries, t.replacedDone(review.entries.length));
   };
 
   // Swaps your entries with the safety copy, keeping the current ones so it can be reversed.
@@ -125,14 +130,14 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
         await saveSafety(swap);
         await onReplaceData(safety.data);
       } catch {
-        setStatus({ kind: "error", text: "That couldn't be done, so nothing was changed." });
+        setStatus({ kind: "error", text: t.undoFail });
         return;
       }
       setSafety(swap);
       setReview(null);
       setStatus({
         kind: "ok",
-        text: safety.reason === "import" ? "Your entries are back to how they were before the import." : "The import was applied again.",
+        text: safety.reason === "import" ? t.undone : t.redone,
       });
     } finally {
       setBusy(false);
@@ -144,24 +149,24 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
   return (
     <>
       <View style={styles.headerRow}>
-        <Text style={[styles.title, { marginBottom: 0 }]}>Settings</Text>
-        <Pressable onPress={onBack} hitSlop={10}><Text style={styles.skip}>Done</Text></Pressable>
+        <Text style={[styles.title, { marginBottom: 0 }]}>{t.settings}</Text>
+        <Pressable onPress={onBack} hitSlop={10}><Text style={styles.skip}>{t.done}</Text></Pressable>
       </View>
 
-      <Text style={styles.label}>Your data</Text>
+      <Text style={styles.label}>{t.yourData}</Text>
       <Text style={[styles.cardSub, { marginTop: 0, marginBottom: 12 }]}>
-        Your entries are stored only on this phone. Save a file to keep a copy you can import later.
+        {t.dataNote}
       </Text>
       <Pressable style={[styles.btn2, busy && { opacity: 0.5 }]} disabled={busy} onPress={saveFile}>
-        <Text style={styles.btn2Text}>Save file</Text>
+        <Text style={styles.btn2Text}>{t.saveFile}</Text>
       </Pressable>
       <Pressable style={[styles.btn2, busy && { opacity: 0.5 }]} disabled={busy} onPress={importData}>
-        <Text style={styles.btn2Text}>Import data</Text>
+        <Text style={styles.btn2Text}>{t.importData}</Text>
       </Pressable>
       <Text style={[styles.cardSub, { marginTop: 0, marginBottom: 12 }]}>
         {settings.lastSaved
-          ? `Last file saved: ${formatDate(settings.lastSaved, settings.dateFormat)}`
-          : "You haven't saved a file yet."}
+          ? t.lastSaved(formatDate(settings.lastSaved, settings.dateFormat))
+          : t.neverSaved}
       </Text>
 
       {status && (
@@ -170,36 +175,35 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
 
       {review && (
         <View style={[styles.card, { marginBottom: 14 }]}>
-          <Text style={styles.cardName}>Review before importing</Text>
+          <Text style={styles.cardName}>{t.reviewTitle}</Text>
           <Text style={styles.cardText}>
-            The file has {plural(review.entries.length, "entry", "entries")}.{" "}
-            {plural(review.fresh.length, "is new", "are new")}, and {review.alreadyHere} {review.alreadyHere === 1 ? "is" : "are"} already in your Rolodex.
+            {t.fileHas(review.entries.length)} {t.newAndHere(review.fresh.length, review.alreadyHere)}
           </Text>
           {review.invalid > 0 && (
             <Text style={styles.cardSub}>
-              {plural(review.invalid, "item in the file couldn't be read and will be skipped", "items in the file couldn't be read and will be skipped")}.
+              {t.unreadable(review.invalid)}
             </Text>
           )}
-          <Text style={styles.cardSub}>Nothing has been changed yet.</Text>
+          <Text style={styles.cardSub}>{t.nothingChanged}</Text>
 
           {!confirmReplace && (
             <View style={{ marginTop: 14 }}>
               {review.fresh.length > 0 ? (
                 <Pressable style={[styles.btn, { marginHorizontal: 0 }, busy && { opacity: 0.5 }]} disabled={busy} onPress={addNew}>
-                  <Text style={styles.btnText}>Add {plural(review.fresh.length, "new entry", "new entries")}</Text>
+                  <Text style={styles.btnText}>{t.addNew(review.fresh.length)}</Text>
                 </Pressable>
               ) : (
                 <Text style={[styles.cardText, { marginBottom: 10 }]}>
-                  There's nothing new to add. Everything in this file is already in your Rolodex.
+                  {t.nothingNew}
                 </Text>
               )}
               {data.entries.length > 0 && (
                 <Pressable style={[styles.btn2, { marginHorizontal: 0 }]} disabled={busy} onPress={() => setConfirmReplace(true)}>
-                  <Text style={styles.btn2Text}>Replace everything with this file…</Text>
+                  <Text style={styles.btn2Text}>{t.replaceAll}</Text>
                 </Pressable>
               )}
               <Pressable style={[styles.btn2, { marginHorizontal: 0, marginBottom: 0 }]} disabled={busy} onPress={() => setReview(null)}>
-                <Text style={styles.btn2Text}>Cancel</Text>
+                <Text style={styles.btn2Text}>{t.cancel}</Text>
               </Pressable>
             </View>
           )}
@@ -207,14 +211,13 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
           {confirmReplace && (
             <View style={{ marginTop: 14 }}>
               <Text style={[styles.cardText, { color: ERROR_COLOR, marginTop: 0, marginBottom: 12 }]}>
-                This swaps your {plural(data.entries.length, "entry", "entries")} for the {plural(review.entries.length, "entry", "entries")} in the file.
-                Anything not in the file is removed from the app. A safety copy is kept, so you can undo it.
+                {t.replaceWarn(data.entries.length, review.entries.length)}
               </Text>
               <Pressable style={[styles.btn, { marginHorizontal: 0 }, busy && { opacity: 0.5 }]} disabled={busy} onPress={replaceAll}>
-                <Text style={styles.btnText}>Yes, replace everything</Text>
+                <Text style={styles.btnText}>{t.yesReplace}</Text>
               </Pressable>
               <Pressable style={[styles.btn2, { marginHorizontal: 0, marginBottom: 0 }]} disabled={busy} onPress={() => setConfirmReplace(false)}>
-                <Text style={styles.btn2Text}>Go back</Text>
+                <Text style={styles.btn2Text}>{t.goBack}</Text>
               </Pressable>
             </View>
           )}
@@ -224,15 +227,27 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
       {safety && (
         <>
           <Pressable style={[styles.btn2, busy && { opacity: 0.5 }]} disabled={busy} onPress={undo}>
-            <Text style={styles.btn2Text}>{safety.reason === "import" ? "Undo last import" : "Redo the import"}</Text>
+            <Text style={styles.btn2Text}>{safety.reason === "import" ? t.undoImport : t.redoImport}</Text>
           </Pressable>
           <Text style={[styles.cardSub, { marginTop: 0, marginBottom: 12 }]}>
-            Safety copy from {when(safety.savedAt)} ({plural(safety.data.entries.length, "entry", "entries")}). Switching never loses the other version.
+            {t.safetyCopy(when(safety.savedAt), safety.data.entries.length)}
           </Text>
         </>
       )}
 
-      <Text style={[styles.label, { marginTop: 14 }]}>Date format</Text>
+      <Text style={[styles.label, { marginTop: 14 }]}>{t.language}</Text>
+      {LANGS.map((l) => (
+        <Pressable
+          key={l}
+          style={[styles.option, settings.language === l && styles.optionOn]}
+          onPress={() => onChange({ ...settings, language: l })}
+        >
+          <Text style={styles.cardName}>{LANG_NAMES[l]}</Text>
+          <Text style={styles.cardSub}>{settings.language === l ? "✓" : ""}</Text>
+        </Pressable>
+      ))}
+
+      <Text style={[styles.label, { marginTop: 14 }]}>{t.dateFormat}</Text>
       {(Object.keys(FORMAT_LABELS) as DateFormat[]).map((f) => (
         <Pressable
           key={f}
@@ -246,9 +261,9 @@ export function SettingsScreen({ settings, onChange, onBack, data, onReplaceData
         </Pressable>
       ))}
 
-      <Text style={[styles.label, { marginTop: 14 }]}>Font for your entries</Text>
+      <Text style={[styles.label, { marginTop: 14 }]}>{t.fontTitle}</Text>
       <Text style={[styles.cardSub, { marginTop: 0, marginBottom: 12 }]}>
-        Applies to what you write and the entries you save. Titles and labels always use Lora.
+        {t.fontNote}{t.fontHebrewNote ? ` ${t.fontHebrewNote}` : ""}
       </Text>
       {FONT_KEYS.map((k: FontKey) => (
         <Pressable

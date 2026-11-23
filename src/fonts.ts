@@ -81,6 +81,20 @@ export const FONT_KEYS = Object.keys(FONTS) as FontKey[];
 export const UI_FONT: FontKey = "lora";
 export const DEFAULT_FONT: FontKey = "patrick";
 
+// None of the fonts above have Hebrew letters. Hebrew text falls back to this one (added to the end of
+// each font's family list on the web), and it is only downloaded when Hebrew is chosen.
+export const HEBREW_REGULAR = "FrankRuhlLibre_400Regular";
+export const HEBREW_BOLD = "FrankRuhlLibre_700Bold";
+const HEBREW_FILES: Record<string, number> = {
+  FrankRuhlLibre_400Regular: require("@expo-google-fonts/frank-ruhl-libre/400Regular/FrankRuhlLibre_400Regular.ttf"),
+  FrankRuhlLibre_700Bold: require("@expo-google-fonts/frank-ruhl-libre/700Bold/FrankRuhlLibre_700Bold.ttf"),
+};
+let hebrewLoading: Promise<void> | null = null;
+export function loadHebrewFont(): Promise<void> {
+  if (!hebrewLoading) hebrewLoading = Font.loadAsync(HEBREW_FILES).catch(() => {});
+  return hebrewLoading;
+}
+
 const loading = new Map<FontKey, Promise<void>>();
 
 // Loads a font once; later calls reuse the same promise.

@@ -6,6 +6,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { formatDate, useSettings } from "./settings";
 import { colors, styles } from "./styles";
 import { ymd } from "./types";
+import { useT } from "./i18n";
 
 type Props = { value: string; onChange: (v: string) => void };
 
@@ -14,6 +15,7 @@ type Props = { value: string; onChange: (v: string) => void };
 // format; the value itself is always YYYY-MM-DD.
 export function DateField({ value, onChange }: Props) {
   const { dateFormat, font } = useSettings();
+  const t = useT();
   const [open, setOpen] = useState(false);
   const label = formatDate(value, dateFormat);
 
@@ -79,7 +81,7 @@ export function DateField({ value, onChange }: Props) {
                 onChange={(_, picked) => picked && onChange(ymd(picked))}
               />
               <Pressable style={styles.btn} onPress={() => setOpen(false)}>
-                <Text style={styles.btnText}>Done</Text>
+                <Text style={styles.btnText}>{t.done}</Text>
               </Pressable>
             </View>
           </Pressable>

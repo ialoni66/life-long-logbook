@@ -1,0 +1,133 @@
+// Every piece of text the app shows, in each language. Pure data and plural rules, so it can be tested alone.
+import type { Lang } from "./lang";
+
+const en = {
+  tabLog: "+ Log", tabSearch: "Search", tabCalendar: "Calendar",
+  deleteConfirm: "Delete this entry?", cancel: "Cancel", delete: "Delete",
+
+  newTitle: "New Character Entry", editTitle: "Edit entry",
+  nickname: "Nickname", whereMet: "Where we met", notes: "Notes", contact: "Contact", date: "Date",
+  skip: "Skip", undoSkip: "Undo skip", skipped: "Skipped",
+  phName: "Name (if you remember it)", phLocation: "Location",
+  phNotes: "What they were like, what you talked about, anything else",
+  phContact: "Phone, email, social handle...",
+  missingInfo: "Missing info",
+  fillIn: (list: string) => `Please fill in ${list}, or tap Skip if you have nothing to add.`,
+  needOne: "Add at least one of Nickname, Where we met, Contact or Notes.",
+  saved: "Saved ✓", save: "Save", saveChanges: "Save changes",
+
+  searchTitle: "Search",
+  searchPh: "Search nickname, place, date, contact or notes",
+  entries: (n: number) => `${n} ${n === 1 ? "entry" : "entries"}`,
+  noMatches: "No matches.", nothingYet: 'Nothing logged yet. Tap "+ Log".',
+  edit: "Edit", noName: "(no name)", settingsA11y: "Settings",
+  nothingDay: "Nothing logged this day.",
+
+  settings: "Settings", done: "Done", yourData: "Your data",
+  dataNote: "Your entries are stored only on this phone. Save a file to keep a copy you can import later.",
+  saveFile: "Save file", importData: "Import data",
+  lastSaved: (d: string) => `Last file saved: ${d}`, neverSaved: "You haven't saved a file yet.",
+  noEntriesToSave: "You have no entries yet, so there is nothing to save.",
+  savedShared: "Choose “Save to Files” in the sheet that opened to keep your file.",
+  savedText: "Your entries were shared as text.", savedDownloads: "Your file was saved to your downloads.",
+  saveFail: "The file couldn't be created. Your entries are unchanged.",
+  importUnavailable: "Import isn't available in this build yet.",
+  importFailed: "That file couldn't be imported. Nothing was changed.",
+  importUnreadable: "This file can't be read. It doesn't look like a saved Rolodex file.",
+  importNotRolodex: "This file doesn't look like a Rolodex file, so nothing was imported.",
+  importEmpty: "This file has no entries in it, so nothing was imported.",
+  importNoneReadable: "None of the entries in this file could be read, so nothing was imported.",
+  safetyFail: "A safety copy couldn't be saved, so nothing was changed.",
+  storeFail: "Your entries couldn't be stored, so nothing was changed.",
+  addedDone: (n: number) => `Added ${n} new ${n === 1 ? "entry" : "entries"}. Your previous entries are kept as a safety copy.`,
+  replacedDone: (n: number) => `Replaced your entries with the ${n} ${n === 1 ? "entry" : "entries"} from the file. Your previous entries are kept as a safety copy.`,
+  undoFail: "That couldn't be done, so nothing was changed.",
+  undone: "Your entries are back to how they were before the import.", redone: "The import was applied again.",
+  reviewTitle: "Review before importing",
+  fileHas: (n: number) => `The file has ${n} ${n === 1 ? "entry" : "entries"}.`,
+  newAndHere: (f: number, h: number) =>
+    `${f} ${f === 1 ? "is" : "are"} new, and ${h} ${h === 1 ? "is" : "are"} already in your Rolodex.`,
+  unreadable: (n: number) =>
+    `${n} ${n === 1 ? "item in the file couldn't be read and will be skipped" : "items in the file couldn't be read and will be skipped"}.`,
+  nothingChanged: "Nothing has been changed yet.",
+  addNew: (n: number) => `Add ${n} new ${n === 1 ? "entry" : "entries"}`,
+  nothingNew: "There's nothing new to add. Everything in this file is already in your Rolodex.",
+  replaceAll: "Replace everything with this file…",
+  replaceWarn: (cur: number, inFile: number) =>
+    `This swaps your ${cur} ${cur === 1 ? "entry" : "entries"} for the ${inFile} ${inFile === 1 ? "entry" : "entries"} in the file. Anything not in the file is removed from the app. A safety copy is kept, so you can undo it.`,
+  yesReplace: "Yes, replace everything", goBack: "Go back",
+  undoImport: "Undo last import", redoImport: "Redo the import",
+  safetyCopy: (when: string, n: number) =>
+    `Safety copy from ${when} (${n} ${n === 1 ? "entry" : "entries"}). Switching never loses the other version.`,
+  dateFormat: "Date format", language: "Language",
+  fontTitle: "Font for your entries",
+  fontNote: "Applies to what you write and the entries you save. Titles and labels always use Lora.",
+  fontHebrewNote: "",
+};
+
+export type Strings = typeof en;
+
+const he: Strings = {
+  tabLog: "+ רשומה", tabSearch: "חיפוש", tabCalendar: "לוח שנה",
+  deleteConfirm: "למחוק את הרשומה?", cancel: "ביטול", delete: "מחיקה",
+
+  newTitle: "רשומת דמות חדשה", editTitle: "עריכת רשומה",
+  nickname: "כינוי", whereMet: "איפה נפגשנו", notes: "הערות", contact: "פרטי קשר", date: "תאריך",
+  skip: "דלג", undoSkip: "בטל דילוג", skipped: "דולג",
+  phName: "שם (אם אתם זוכרים)", phLocation: "מקום",
+  phNotes: "איך הם היו, על מה דיברתם, וכל דבר אחר",
+  phContact: "טלפון, אימייל, שם משתמש ברשת חברתית...",
+  missingInfo: "חסר מידע",
+  fillIn: (list) => `נא למלא: ${list}, או ללחוץ על ״דלג״ אם אין מה להוסיף.`,
+  needOne: "הוסיפו לפחות אחד מהשדות: כינוי, איפה נפגשנו, פרטי קשר או הערות.",
+  saved: "נשמר ✓", save: "שמירה", saveChanges: "שמירת שינויים",
+
+  searchTitle: "חיפוש",
+  searchPh: "חיפוש לפי כינוי, מקום, תאריך, פרטי קשר או הערות",
+  entries: (n) => (n === 1 ? "רשומה אחת" : `${n} רשומות`),
+  noMatches: "אין תוצאות.", nothingYet: "עדיין לא נרשם דבר. לחצו על ״+ רשומה״.",
+  edit: "עריכה", noName: "(ללא שם)", settingsA11y: "הגדרות",
+  nothingDay: "לא נרשם דבר ביום הזה.",
+
+  settings: "הגדרות", done: "סיום", yourData: "הנתונים שלך",
+  dataNote: "הרשומות שלך נשמרות רק בטלפון הזה. שמרו קובץ כדי לקבל עותק שאפשר לייבא בהמשך.",
+  saveFile: "שמירת קובץ", importData: "ייבוא נתונים",
+  lastSaved: (d) => `הקובץ האחרון נשמר: ${d}`, neverSaved: "עדיין לא שמרתם קובץ.",
+  noEntriesToSave: "אין עדיין רשומות, ולכן אין מה לשמור.",
+  savedShared: "בחרו ״שמירה בקבצים״ בחלון שנפתח כדי לשמור את הקובץ.",
+  savedText: "הרשומות שלך שותפו כטקסט.", savedDownloads: "הקובץ נשמר בהורדות שלך.",
+  saveFail: "לא ניתן היה ליצור את הקובץ. הרשומות שלך לא השתנו.",
+  importUnavailable: "הייבוא עדיין לא זמין בגרסה הזו.",
+  importFailed: "לא ניתן היה לייבא את הקובץ. דבר לא השתנה.",
+  importUnreadable: "לא ניתן לקרוא את הקובץ. הוא לא נראה כמו קובץ Rolodex שמור.",
+  importNotRolodex: "הקובץ לא נראה כמו קובץ Rolodex, ולכן דבר לא יובא.",
+  importEmpty: "אין בקובץ רשומות, ולכן דבר לא יובא.",
+  importNoneReadable: "לא ניתן היה לקרוא אף רשומה בקובץ, ולכן דבר לא יובא.",
+  safetyFail: "לא ניתן היה לשמור עותק ביטחון, ולכן דבר לא השתנה.",
+  storeFail: "לא ניתן היה לשמור את הרשומות שלך, ולכן דבר לא השתנה.",
+  addedDone: (n) => `נוספו ${n === 1 ? "רשומה חדשה אחת" : `${n} רשומות חדשות`}. הרשומות הקודמות שלך נשמרות כעותק ביטחון.`,
+  replacedDone: (n) => `הרשומות שלך הוחלפו ב${n === 1 ? "רשומה האחת" : `־${n} הרשומות`} שבקובץ. הרשומות הקודמות שלך נשמרות כעותק ביטחון.`,
+  undoFail: "לא ניתן היה לבצע זאת, ולכן דבר לא השתנה.",
+  undone: "הרשומות שלך חזרו למצבן לפני הייבוא.", redone: "הייבוא הוחל שוב.",
+  reviewTitle: "סקירה לפני הייבוא",
+  fileHas: (n) => `בקובץ יש ${n === 1 ? "רשומה אחת" : `${n} רשומות`}.`,
+  newAndHere: (f, h) =>
+    `${f === 1 ? "אחת חדשה" : `${f} חדשות`}, ו${h === 1 ? "אחת כבר נמצאת" : `־${h} כבר נמצאות`} ב־Rolodex שלך.`,
+  unreadable: (n) => (n === 1 ? "פריט אחד בקובץ לא נקרא ויידלג." : `${n} פריטים בקובץ לא נקראו ויידלגו.`),
+  nothingChanged: "דבר עדיין לא השתנה.",
+  addNew: (n) => (n === 1 ? "הוספת רשומה חדשה אחת" : `הוספת ${n} רשומות חדשות`),
+  nothingNew: "אין מה להוסיף. כל מה שבקובץ הזה כבר נמצא ב־Rolodex שלך.",
+  replaceAll: "החלפת הכול בקובץ הזה…",
+  replaceWarn: (cur, inFile) =>
+    `הפעולה מחליפה את ${cur === 1 ? "הרשומה שלך" : `${cur} הרשומות שלך`} ב${inFile === 1 ? "רשומה שבקובץ" : `־${inFile} הרשומות שבקובץ`}. כל מה שלא נמצא בקובץ יוסר מהאפליקציה. נשמר עותק ביטחון, כך שאפשר לבטל.`,
+  yesReplace: "כן, להחליף הכול", goBack: "חזרה",
+  undoImport: "ביטול הייבוא האחרון", redoImport: "ביצוע הייבוא מחדש",
+  safetyCopy: (when, n) =>
+    `עותק ביטחון מ־${when} (${n === 1 ? "רשומה אחת" : `${n} רשומות`}). המעבר ביניהם לא מאבד אף גרסה.`,
+  dateFormat: "פורמט תאריך", language: "שפה",
+  fontTitle: "גופן לרשומות שלך",
+  fontNote: "חל על מה שאתם כותבים ועל הרשומות השמורות. כותרות ותוויות תמיד בגופן קבוע.",
+  fontHebrewNote: "הגופנים כאן מיועדים לאותיות לטיניות. טקסט בעברית מוצג בגופן Frank Ruhl Libre.",
+};
+
+export const STRINGS: Record<Lang, Strings> = { en, he };

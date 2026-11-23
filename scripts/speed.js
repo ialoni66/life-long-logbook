@@ -31,13 +31,14 @@ function fontMap(BASE, dist) {
     patrick: [find("PatrickHand_400Regular")],
     elite: [find("SpecialElite_400Regular")],
     cormorant: [find("CormorantGaramond_500Medium"), find("CormorantGaramond_700Bold")],
+    hebrew: [find("FrankRuhlLibre_400Regular"), find("FrankRuhlLibre_700Bold")],
   };
 }
 
 // Runs at the top of the page: reads which font you chose (the app keeps it in localStorage) and starts
 // downloading the interface font plus that one right away. Anything that goes wrong is ignored.
 function preloadScript(map) {
-  return `<script>(function(){try{var M=${JSON.stringify(map)};var s=JSON.parse(localStorage.getItem("logbook.settings.v1")||"{}");var k=M[s.font]?s.font:"patrick";var list=M.lora.concat(k==="lora"?[]:M[k]);list.forEach(function(u){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/ttf";l.crossOrigin="anonymous";l.href=u;document.head.appendChild(l)})}catch(e){}})()</script>`;
+  return `<script>(function(){try{var M=${JSON.stringify(map)};var s=JSON.parse(localStorage.getItem("logbook.settings.v1")||"{}");var k=M[s.font]?s.font:"patrick";var he=s.language==="he";if(he){document.documentElement.dir="rtl";document.documentElement.lang="he"}var list=M.lora.concat(k==="lora"?[]:M[k],he?M.hebrew:[]);list.forEach(function(u){var l=document.createElement("link");l.rel="preload";l.as="font";l.type="font/ttf";l.crossOrigin="anonymous";l.href=u;document.head.appendChild(l)})}catch(e){}})()</script>`;
 }
 
 const registerScript = (BASE) =>

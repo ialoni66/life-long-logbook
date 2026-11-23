@@ -1,9 +1,10 @@
 import React, { createContext, useContext } from "react";
 import {
-  StyleSheet, Text as RNText, TextInput as RNTextInput,
+  Platform, StyleSheet, Text as RNText, TextInput as RNTextInput,
   TextInputProps, TextProps, TextStyle,
 } from "react-native";
-import { FONTS, FontKey, UI_FONT } from "./fonts";
+import { FONTS, FontKey, HEBREW_BOLD, HEBREW_REGULAR, UI_FONT } from "./fonts";
+import { isRTL } from "./lang";
 import { useSettings } from "./settings";
 
 // Drop-in replacements for Text and TextInput with two font roles:
@@ -27,7 +28,10 @@ function resolve(style: any, font: FontKey, nested: boolean, noScale?: boolean):
   const flat: TextStyle = StyleSheet.flatten(style) ?? {};
   const face = FONTS[font];
   const bold = flat.fontWeight === "bold" || Number(flat.fontWeight) >= 600;
-  const out: Record<string, any> = { ...flat, fontFamily: bold ? face.bold : face.regular };
+  // On the web the family is a list: letters the font lacks (Hebrew) come from the last name.
+  const family = bold ? face.bold : face.regular;
+  const fontFamily = Platform.OS === "web" ? `${family}, ${bold ? HEBREW_BOLD : HEBREW_REGULAR}` : family;
+  const out: Record<string, any> = { ...flat, fontFamily };
   if (flat.fontWeight) out.fontWeight = "normal"; // weight is already part of the family
   if (!noScale && (!nested || flat.fontSize)) {
     out.fontSize = (flat.fontSize ?? 14) * face.scale;
@@ -41,17 +45,21 @@ export function Text({ style, kind = "ui", fontKey, noScale, ...rest }: TextProp
   const { font } = useSettings();
   const own = fontKey ?? (kind === "entry" ? font : UI_FONT);
   const used = fontKey ?? parent ?? own;
+  // What you wrote can be in either direction, whatever language the app itself is in.
+  const dir: any = kind === "entry" && Platform.OS === "web" ? { dir: "auto" } : {};
   return (
     <ParentFont.Provider value={used}>
-      <RNText {...rest} style={resolve(style, used, parent !== null, noScale)} />
+      <RNText {...rest} {...dir} style={resolve(style, used, parent !== null, noScale)} />
     </ParentFont.Provider>
   );
 }
 
 export function TextInput({ style, fontKey, ...rest }: TextInputProps & Extra) {
-  const { font } = useSettings();
+  const { font, language } = useSettings();
   const resolved: Record<string, any> = resolve(style, fontKey ?? font, false);
   // iPhone Safari zooms the page when a box with text under 16px is tapped, so never go below 16.
   resolved.fontSize = Math.max(resolved.fontSize ?? 16, 16);
-  return <RNTextInput {...rest} style={resolved} />;
+  // Typed text follows its own direction; an empty box (placeholder) follows the app's language.
+  const dir: any = Platform.OS === "web" ? { dir: rest.value ? "auto" : isRTL(language) ? "rtl" : "ltr" } : {};
+  return <RNTextInput {...rest} {...dir} style={resolved} />;
 }
