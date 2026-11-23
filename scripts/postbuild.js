@@ -29,6 +29,8 @@ fs.writeFileSync(
   })
 );
 
+const splash = require("./splash");
+
 const tags = `
 <link rel="manifest" href="${BASE}/manifest.webmanifest">
 <link rel="apple-touch-icon" href="${BASE}/apple-touch-icon.png">
@@ -37,12 +39,17 @@ const tags = `
 <meta name="apple-mobile-web-app-title" content="Rolodex">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="color-scheme" content="dark">
-<style>html,body{background:#1b2130}</style>`;
+<style>html,body{background:#1b2130}${splash.css}</style>`;
 
 const file = path.join(dist, "index.html");
 let html = fs.readFileSync(file, "utf8");
 html = html.replace("</head>", `${tags}\n</head>`);
 html = html.replace(/<meta name="viewport"[^>]*>/, '<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">');
+// The loading screen goes straight after <body>, outside the app's own #root, so it shows the
+// moment the page opens and is not wiped when the app starts drawing. App.tsx hides it later.
+const withSplash = html.replace(/<body[^>]*>/, (open) => `${open}\n${splash.html}`);
+if (withSplash === html) throw new Error("postbuild: could not find <body> to place the loading screen");
+html = withSplash;
 fs.writeFileSync(file, html);
 
 fs.writeFileSync(path.join(dist, ".nojekyll"), "");

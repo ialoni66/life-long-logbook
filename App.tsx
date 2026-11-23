@@ -10,6 +10,7 @@ import { CalendarScreen } from "./src/CalendarScreen";
 import { LogScreen } from "./src/LogScreen";
 import { SearchScreen } from "./src/SearchScreen";
 import { SettingsScreen } from "./src/SettingsScreen";
+import { hideSplash } from "./src/splash";
 import { defaultSettings, Settings, SettingsProvider } from "./src/settings";
 import { load, loadSettings, save, saveSettings } from "./src/storage";
 import { styles } from "./src/styles";
@@ -67,6 +68,9 @@ export default function App() {
       FONT_KEYS.forEach((k) => loadFont(k)); // the rest load quietly for the Settings previews
     });
   }, []);
+
+  // Once everything is loaded, fade out the loading screen.
+  useEffect(() => { if (ready) hideSplash(); }, [ready]);
 
   const saveEntry = (fields: Omit<Entry, "id">, id?: string) => {
     const d = latest.current;
